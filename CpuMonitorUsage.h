@@ -3,15 +3,15 @@
 
 #pragma once
 #include <QObject>
-#include <QTimer>
 #include <QString>
+#include <QTimer>
 
 class CpuMonitorUsage : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit CpuMonitorUsage(QObject* parent = nullptr);
+    explicit CpuMonitorUsage(QObject *parent = nullptr);
     ~CpuMonitorUsage() = default;
 
     double getCurrentUsage() const { return m_currentUsage; }
@@ -24,7 +24,7 @@ private slots:
     void updateCpuUsage();
 
 private:
-    QTimer* m_timer;
+    QTimer *m_timer;
     double m_currentUsage;
     quint64 m_lastTotal;
     quint64 m_lastIdle;

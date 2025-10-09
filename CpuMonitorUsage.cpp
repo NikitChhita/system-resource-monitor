@@ -1,21 +1,20 @@
 #include "CpuMonitorUsage.h"
 #include <QFile>
-#include <QTextStream>
 #include <QRegularExpression>
+#include <QTextStream>
 
 //using QFile for linux /proc/stat //QObject for Qt's signal system
 //QRegularExpression used to split whitespace in /proc/stat lines
-CpuMonitorUsage::CpuMonitorUsage(QObject* parent)
+CpuMonitorUsage::CpuMonitorUsage(QObject *parent)
     : QObject(parent)
     , m_currentUsage(0.0) //current CPU usage to 0.0 to start
-    , m_lastTotal(0) //previous total CPU time (0 for now)
-    , m_lastIdle(0) //previous idle CPU time (0 aswell)
-    , m_firstRun(true) //flag to skip first the reading
+    , m_lastTotal(0)      //previous total CPU time (0 for now)
+    , m_lastIdle(0)       //previous idle CPU time (0 aswell)
+    , m_firstRun(true)    //flag to skip first the reading
 {
     m_timer = new QTimer(this); //timer object
     //everytime timer fires, updateCpuUsage gets called to update our usage
     connect(m_timer, &QTimer::timeout, this, &CpuMonitorUsage::updateCpuUsage);
-
 
     //timer fires every 1 second
     m_timer->start(1000);
@@ -71,7 +70,8 @@ void CpuMonitorUsage::updateCpuUsage()
         const quint64 diffTotal = total - m_lastTotal;
 
         if (diffTotal > 0) { //dont want to divide by 0
-            m_currentUsage = 100.0 * static_cast<double>(diffTotal - diffIdle) / static_cast<double>(diffTotal);
+            m_currentUsage = 100.0 * static_cast<double>(diffTotal - diffIdle)
+                             / static_cast<double>(diffTotal);
         } //diffTotal - diddIdle is active CPU time during interval
         //divided by diffTotal is the percent of time CPU was active
         //multiply 100 to convert to a percentage
