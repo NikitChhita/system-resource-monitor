@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 project(untitled LANGUAGES CXX)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Network)
 
 qt_standard_project_setup()
 
@@ -14,7 +15,8 @@ qt_add_executable(untitled
     CpuMonitorUsage.cpp
     RamUsage.h
     RamUsage.cpp
-
+    Network.h
+    Network.cpp
 
 )
 
@@ -22,6 +24,7 @@ target_link_libraries(untitled
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt6::Network
 )
 
 include(GNUInstallDirs)

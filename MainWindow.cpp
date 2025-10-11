@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include "CpuMonitorUsage.h"
 #include "RamUsage.h"
+#include "Network.h"
 
 // CPU widget with actual monitoring
 class CpuWidget : public QWidget
@@ -52,6 +53,98 @@ private:
     CpuMonitorUsage *cpuMonitor;
 };
 
+// Network widget
+class NetWidget : public QWidget
+{
+public:
+    NetWidget(QWidget *parent = nullptr)
+        : QWidget(parent)
+    {
+        QVBoxLayout *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(24, 24, 24, 24);
+
+        // Title
+        QLabel *title = new QLabel("Network Performance");
+        title->setAlignment(Qt::AlignCenter);
+        title->setStyleSheet(
+            "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
+        layout->addWidget(title);
+
+        // interface's name display
+        interfaceLabel = new QLabel("Adapter: N/A");
+        interfaceLabel->setAlignment(Qt::AlignCenter);
+        interfaceLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(interfaceLabel);
+
+        // connection type display
+        connectionLabel = new QLabel("Connection Type: N/A");
+        connectionLabel->setAlignment(Qt::AlignCenter);
+        connectionLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(connectionLabel);
+
+        // ipv6 address display
+        ipv6Label = new QLabel("IPv6 Address: ::1");
+        ipv6Label->setAlignment(Qt::AlignCenter);
+        ipv6Label->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(ipv6Label);
+
+        // ipv4 address display
+        ipv4Label = new QLabel("IPv4 Address: 127.0.0.1");
+        ipv4Label->setAlignment(Qt::AlignCenter);
+        ipv4Label->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(ipv4Label);
+
+        // Received bytes display
+        bytesReceivedLabel = new QLabel("Received: 0.0 Kb/s");
+        bytesReceivedLabel->setAlignment(Qt::AlignCenter);
+        bytesReceivedLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(bytesReceivedLabel);
+
+        // Sent bytes display
+        bytesSentLabel = new QLabel("Sent: 0.0 Kb/s");
+        bytesSentLabel->setAlignment(Qt::AlignCenter);
+        bytesSentLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(bytesSentLabel);
+
+        // Create and connect network monitor
+        interfaceMonitor = new networkStats(this);
+        connect(interfaceMonitor, &networkStats::updateIfaceData, this, &NetWidget::updateNetSpecs);
+        connect(interfaceMonitor, &networkStats::updatedThroughput, this, &NetWidget::updateNetData);
+        layout->addStretch(); // Push content to top
+        setStyleSheet("QWidget { background-color: #1e1e1e; }");
+    }
+
+private slots:
+    void updateNetSpecs(QString iface, QString type, QString ipv6, QString ipv4)
+    {
+        interfaceLabel->setText(
+            QString("Adapter: %1").arg(iface));
+            connectionLabel->setText(
+                QString("Connection Type: %1").arg(type));
+            ipv6Label->setText(
+                QString("IPv6 Address: %1").arg(ipv6));
+            ipv4Label->setText(
+                QString("IPv4 Address: %1").arg(ipv4));
+    }
+
+    void updateNetData(QString received, QString sent)
+    {
+        bytesReceivedLabel->setText(
+            QString("Received: %1").arg(received));
+        bytesSentLabel->setText(
+            QString("Sent: %1").arg(sent));
+    }
+private:
+    QLabel *interfaceLabel;
+    QLabel *connectionLabel;
+    QLabel *ipv6Label;
+    QLabel *ipv4Label;
+    QLabel *bytesReceivedLabel;
+    QLabel *bytesSentLabel;
+    networkStats *interfaceSpecs;
+    networkStats *interfaceMonitor;
+};
+
 
 class RamWidget: public QWidget
 {
@@ -62,25 +155,24 @@ public:
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
 
-        //Title
+        //title
         QLabel *title = new QLabel("Ram Performance");
         title->setAlignment(Qt::AlignCenter);
         title->setStyleSheet(
-            "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
+            "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
         layout->addWidget(title);
-        ramUsageLabel = new QLabel("Overall Ram Usage: 0.0%");
+
+        ramUsageLabel = new QLabel("Memory Used: 0.0 GB / 0.0 GB");
         ramUsageLabel->setAlignment(Qt::AlignCenter);
         ramUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
         layout->addWidget(ramUsageLabel);
 
-        // Create and connect CPU monitor
         ramMonitor = new RamUsage(this);
         connect(ramMonitor, &RamUsage::ramUsageUpdated, this, &RamWidget::updateUsage);
 
-        layout->addStretch(); // Push content to top
-        setStyleSheet("QWidget { background-color: #1e1e1e; }");
+        layout->addStretch();
+        setStyleSheet("QWidget { background-color: #1e1e1e;}");
     }
-
 private slots:
     void updateUsage(long usedRamKB)
     {
@@ -89,6 +181,7 @@ private slots:
 private:
     QLabel *ramUsageLabel;
     RamUsage *ramMonitor;
+
 };
 
 // placeholder widget for other tab pages
@@ -164,10 +257,13 @@ void MainWindow::setupContentStack()
     // Add CPU widget with actual monitoring
     contentStack->addWidget(new CpuWidget());
     contentStack->addWidget(new RamWidget());
+    contentStack->addWidget(new PlaceholderWidget("Disk"));
+    contentStack->addWidget(new NetWidget());
+    contentStack->addWidget(new PlaceholderWidget("Processes"));
 
 
     // Add placeholder widgets for other performance tabs
-    QStringList tabs = {"Disk", "Network", "Processes"};
+    QStringList tabs = {"Disk", "Processes"};
     for (const QString &tab : tabs) {
         contentStack->addWidget(new PlaceholderWidget(tab));
     }
