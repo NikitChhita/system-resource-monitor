@@ -1,24 +1,29 @@
 #include "MainWindow.h"
-#include "CpuMonitorUsage.h"
 #include <QApplication>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QListWidget>
-#include <QStackedWidget>
 #include <QLabel>
+#include <QListWidget>
 #include <QPalette>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+#include "CpuMonitorUsage.h"
+#include "RamUsage.h"
 
 // CPU widget with actual monitoring
-class CpuWidget : public QWidget {
+class CpuWidget : public QWidget
+{
 public:
-    CpuWidget(QWidget *parent = nullptr) : QWidget(parent) {
+    CpuWidget(QWidget *parent = nullptr)
+        : QWidget(parent)
+    {
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
 
         // Title
         QLabel *title = new QLabel("CPU Performance");
         title->setAlignment(Qt::AlignCenter);
-        title->setStyleSheet("QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
+        title->setStyleSheet(
+            "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
         layout->addWidget(title);
 
         // CPU usage display
@@ -36,8 +41,10 @@ public:
     }
 
 private slots:
-    void updateUsage(double usage) {
-        cpuUsageLabel->setText(QString("Overall CPU Usage: %1%").arg(QString::number(usage, 'f', 1)));
+    void updateUsage(double usage)
+    {
+        cpuUsageLabel->setText(
+            QString("Overall CPU Usage: %1%").arg(QString::number(usage, 'f', 1)));
     }
 
 private:
@@ -45,10 +52,52 @@ private:
     CpuMonitorUsage *cpuMonitor;
 };
 
-// placeholder widget for other tab pages
-class PlaceholderWidget : public QWidget {
+
+class RamWidget: public QWidget
+{
 public:
-    PlaceholderWidget(const QString &title, QWidget *parent = nullptr) : QWidget(parent) {
+    RamWidget(QWidget *parent = nullptr)
+        :QWidget(parent)
+    {
+        QVBoxLayout *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(24, 24, 24, 24);
+
+        //Title
+        QLabel *title = new QLabel("Ram Performance");
+        title->setAlignment(Qt::AlignCenter);
+        title->setStyleSheet(
+            "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
+        layout->addWidget(title);
+        ramUsageLabel = new QLabel("Overall Ram Usage: 0.0%");
+        ramUsageLabel->setAlignment(Qt::AlignCenter);
+        ramUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(ramUsageLabel);
+
+        // Create and connect CPU monitor
+        ramMonitor = new RamUsage(this);
+        connect(ramMonitor, &RamUsage::ramUsageUpdated, this, &RamWidget::updateUsage);
+
+        layout->addStretch(); // Push content to top
+        setStyleSheet("QWidget { background-color: #1e1e1e; }");
+    }
+
+private slots:
+    void updateUsage(long usedRamKB)
+    {
+        ramUsageLabel->setText(ramMonitor->getRamUsageString());
+    }
+private:
+    QLabel *ramUsageLabel;
+    RamUsage *ramMonitor;
+};
+
+// placeholder widget for other tab pages
+class PlaceholderWidget : public QWidget
+{
+public:
+    PlaceholderWidget(const QString &title, QWidget *parent = nullptr)
+        : QWidget(parent)
+    {
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
         //temp display for the tab
@@ -100,7 +149,7 @@ void MainWindow::setupPerformanceSidebar()
 {
     //using a QList to store our tabs and keep index
     performanceSidebar = new QListWidget();
-    performanceSidebar->addItems({"CPU", "Memory", "Disk", "Network"});
+    performanceSidebar->addItems({"CPU", "Memory", "Disk", "Network", "Processes"});
     performanceSidebar->setMinimumWidth(140);
     performanceSidebar->setMaximumWidth(180);
     performanceSidebar->setCurrentRow(0); // Start with CPU selected
@@ -114,21 +163,25 @@ void MainWindow::setupContentStack()
 
     // Add CPU widget with actual monitoring
     contentStack->addWidget(new CpuWidget());
+    contentStack->addWidget(new RamWidget());
+
 
     // Add placeholder widgets for other performance tabs
-    QStringList tabs = {"Memory", "Disk", "Network"};
+    QStringList tabs = {"Disk", "Network", "Processes"};
     for (const QString &tab : tabs) {
         contentStack->addWidget(new PlaceholderWidget(tab));
     }
 
-    mainLayout->addWidget(contentStack, 4);
+    mainLayout->addWidget(contentStack, 5);
 }
 
 void MainWindow::connectSignals()
 {
     //when you click on a new tab the click signals the onPerformanceTab
-    connect(performanceSidebar, &QListWidget::currentRowChanged,
-            this, &MainWindow::onPerformanceTabChanged);
+    connect(performanceSidebar,
+            &QListWidget::currentRowChanged,
+            this,
+            &MainWindow::onPerformanceTabChanged);
 }
 
 //takes the index of the tab you selected and changes the contentStack to your tab page

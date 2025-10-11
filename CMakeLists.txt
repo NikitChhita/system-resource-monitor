@@ -12,6 +12,10 @@ qt_add_executable(untitled
     MainWindow.h
     CpuMonitorUsage.h
     CpuMonitorUsage.cpp
+    RamUsage.h
+    RamUsage.cpp
+
+
 )
 
 target_link_libraries(untitled
