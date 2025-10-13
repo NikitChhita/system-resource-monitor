@@ -13,7 +13,17 @@ networkStats::networkStats(QObject *parent)
 {
     m_timer = new QTimer(this); //timer object
     //everytime timer fires, updateCpuUsage gets called to update our usage
-    QString iface = "enp0s3";
+    QString iface = "lo"; // defaults to loopback interface
+
+    QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
+    for (const QNetworkInterface &interface : interfaces) {
+        // Skips loopback interfaces
+        if (!interface.humanReadableName().contains("lo", Qt::CaseInsensitive)) {
+            iface = interface.humanReadableName();
+            break;
+        }
+    }
+
     connect(m_timer, &QTimer::timeout, this, [this, iface](){
         updateNetStats(iface);
         getIfaceData(iface);
