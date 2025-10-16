@@ -1,4 +1,4 @@
-# Install script for directory: /home/nikit-chhita/untitled
+# Install script for directory: /home/cvdlr17/Desktop/SWE/system-resource-monitor
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -49,12 +49,12 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/untitled"
          RPATH "\$ORIGIN:\$ORIGIN/../lib")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug/untitled")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug/untitled")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/untitled" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/untitled")
     file(RPATH_CHANGE
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/untitled"
-         OLD_RPATH "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib:"
+         OLD_RPATH "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib:"
          NEW_RPATH "\$ORIGIN:\$ORIGIN/../lib")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/bin/aarch64-linux-gnu-strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/untitled")
@@ -63,9 +63,15 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug/.qt/deploy_untitled_58a8016465.cmake")
+  include("/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug/.qt/deploy_untitled_58a8016465.cmake")
 endif()
 
+string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
+       "${CMAKE_INSTALL_MANIFEST_FILES}")
+if(CMAKE_INSTALL_LOCAL_ONLY)
+  file(WRITE "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug/install_local_manifest.txt"
+     "${CMAKE_INSTALL_MANIFEST_CONTENT}")
+endif()
 if(CMAKE_INSTALL_COMPONENT)
   if(CMAKE_INSTALL_COMPONENT MATCHES "^[a-zA-Z0-9_.+-]+$")
     set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
@@ -79,8 +85,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
-       "${CMAKE_INSTALL_MANIFEST_FILES}")
-  file(WRITE "/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

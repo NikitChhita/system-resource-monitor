@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug"
+			"value" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -79,7 +79,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "30"
+			"value" : "31"
 		},
 		{
 			"name" : "CMAKE_CACHE_PATCH_VERSION",
@@ -91,7 +91,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "5"
+			"value" : "6"
 		},
 		{
 			"name" : "CMAKE_COLOR_DIAGNOSTICS",
@@ -115,7 +115,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/nikit-chhita/Qt/Tools/CMake/bin/cmake"
+			"value" : "/usr/bin/cmake"
 		},
 		{
 			"name" : "CMAKE_CPACK_COMMAND",
@@ -127,7 +127,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/nikit-chhita/Qt/Tools/CMake/bin/cpack"
+			"value" : "/usr/bin/cpack"
 		},
 		{
 			"name" : "CMAKE_CTEST_COMMAND",
@@ -139,7 +139,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/nikit-chhita/Qt/Tools/CMake/bin/ctest"
+			"value" : "/usr/bin/ctest"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER",
@@ -334,18 +334,6 @@
 			"value" : "CMAKE_DLLTOOL-NOTFOUND"
 		},
 		{
-			"name" : "CMAKE_EDIT_COMMAND",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Path to cache edit program executable."
-				}
-			],
-			"type" : "INTERNAL",
-			"value" : "/home/nikit-chhita/Qt/Tools/CMake/bin/ccmake"
-		},
-		{
 			"name" : "CMAKE_EXECUTABLE_FORMAT",
 			"properties" : 
 			[
@@ -438,6 +426,22 @@
 			"value" : ""
 		},
 		{
+			"name" : "CMAKE_EXPORT_BUILD_DATABASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Enable/Disable output of build database during the build."
+				}
+			],
+			"type" : "BOOL",
+			"value" : ""
+		},
+		{
 			"name" : "CMAKE_EXPORT_COMPILE_COMMANDS",
 			"properties" : 
 			[
@@ -463,7 +467,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug/CMakeFiles/pkgRedirects"
+			"value" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -535,7 +539,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/nikit-chhita/untitled"
+			"value" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor"
 		},
 		{
 			"name" : "CMAKE_INSTALL_BINDIR",
@@ -847,7 +851,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/nikit-chhita/Qt/Tools/Ninja/ninja"
+			"value" : "/home/cvdlr17/Qt/Tools/Ninja/ninja"
 		},
 		{
 			"name" : "CMAKE_MODULE_LINKER_FLAGS",
@@ -1011,7 +1015,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64"
 		},
 		{
 			"name" : "CMAKE_PROJECT_DESCRIPTION",
@@ -1047,7 +1051,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug/.qtc/package-manager/auto-setup.cmake"
+			"value" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug/.qtc/package-manager/auto-setup.cmake"
 		},
 		{
 			"name" : "CMAKE_PROJECT_NAME",
@@ -1103,7 +1107,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/nikit-chhita/Qt/Tools/CMake/share/cmake-3.30"
+			"value" : "/usr/share/cmake-3.31"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -2270,6 +2274,18 @@
 			"value" : "OFF"
 		},
 		{
+			"name" : "QT_FEATURE_brotli",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: brotli (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_buttongroup",
 			"properties" : 
 			[
@@ -2894,6 +2910,18 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_dnslookup",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: dnslookup (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_doc_snippets",
 			"properties" : 
 			[
@@ -2948,6 +2976,18 @@
 				{
 					"name" : "HELPSTRING",
 					"value" : "Qt feature: drm_atomic (from target Qt6::Gui)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_dtls",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: dtls (from target Qt6::Network)"
 				}
 			],
 			"type" : "INTERNAL",
@@ -3518,6 +3558,18 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_getifaddrs",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: getifaddrs (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
 			"name" : "QT_FEATURE_gif",
 			"properties" : 
 			[
@@ -3602,6 +3654,18 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_gssapi",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: gssapi (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
 			"name" : "QT_FEATURE_gtk3",
 			"properties" : 
 			[
@@ -3656,6 +3720,18 @@
 				{
 					"name" : "HELPSTRING",
 					"value" : "Qt feature: hijricalendar (from target Qt6::Core)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_http",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: http (from target Qt6::Network)"
 				}
 			],
 			"type" : "INTERNAL",
@@ -3890,6 +3966,18 @@
 			"value" : "OFF"
 		},
 		{
+			"name" : "QT_FEATURE_ipv6ifname",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: ipv6ifname (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
 			"name" : "QT_FEATURE_islamiccivilcalendar",
 			"properties" : 
 			[
@@ -4082,12 +4170,36 @@
 			"value" : "OFF"
 		},
 		{
+			"name" : "QT_FEATURE_libproxy",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: libproxy (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
 			"name" : "QT_FEATURE_library",
 			"properties" : 
 			[
 				{
 					"name" : "HELPSTRING",
 					"value" : "Qt feature: library (from target Qt6::Core)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_libresolv",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: libresolv (from target Qt6::Network)"
 				}
 			],
 			"type" : "INTERNAL",
@@ -4142,6 +4254,18 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_linux_netlink",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: linux_netlink (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_linuxfb",
 			"properties" : 
 			[
@@ -4172,6 +4296,18 @@
 				{
 					"name" : "HELPSTRING",
 					"value" : "Qt feature: listwidget (from target Qt6::Widgets)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_localserver",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: localserver (from target Qt6::Network)"
 				}
 			],
 			"type" : "INTERNAL",
@@ -4430,6 +4566,54 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_networkdiskcache",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: networkdiskcache (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_networkinterface",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: networkinterface (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_networklistmanager",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: networklistmanager (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "QT_FEATURE_networkproxy",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: networkproxy (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_no_direct_extern_access",
 			"properties" : 
 			[
@@ -4440,6 +4624,18 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "OFF"
+		},
+		{
+			"name" : "QT_FEATURE_ocsp",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: ocsp (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
 		},
 		{
 			"name" : "QT_FEATURE_opengl",
@@ -4886,6 +5082,30 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_publicsuffix_qt",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: publicsuffix_qt (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_publicsuffix_system",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: publicsuffix_system (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_pushbutton",
 			"properties" : 
 			[
@@ -5066,6 +5286,18 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_res_setservers",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: res_setservers (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
 			"name" : "QT_FEATURE_resizehandler",
 			"properties" : 
 			[
@@ -5114,6 +5346,18 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_schannel",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: schannel (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
 			"name" : "QT_FEATURE_scrollarea",
 			"properties" : 
 			[
@@ -5148,6 +5392,30 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_sctp",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: sctp (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "QT_FEATURE_securetransport",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: securetransport (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
 		},
 		{
 			"name" : "QT_FEATURE_separate_debug_info",
@@ -5306,6 +5574,18 @@
 			"value" : "OFF"
 		},
 		{
+			"name" : "QT_FEATURE_socks5",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: socks5 (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_sortfilterproxymodel",
 			"properties" : 
 			[
@@ -5408,6 +5688,30 @@
 				{
 					"name" : "HELPSTRING",
 					"value" : "Qt feature: sse4_2 (from target Qt6::Core)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "QT_FEATURE_ssl",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: ssl (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_sspi",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: sspi (from target Qt6::Network)"
 				}
 			],
 			"type" : "INTERNAL",
@@ -5736,6 +6040,18 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "OFF"
+		},
+		{
+			"name" : "QT_FEATURE_system_proxies",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: system_proxies (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
 		},
 		{
 			"name" : "QT_FEATURE_system_textmarkdownreader",
@@ -6110,6 +6426,18 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_topleveldomain",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: topleveldomain (from target Qt6::Network)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_translation",
 			"properties" : 
 			[
@@ -6188,6 +6516,18 @@
 				{
 					"name" : "HELPSTRING",
 					"value" : "Qt feature: tuiotouch (from target Qt6::Gui)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_udpsocket",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: udpsocket (from target Qt6::Network)"
 				}
 			],
 			"type" : "INTERNAL",
@@ -6731,7 +7071,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/nikit-chhita/Qt/MaintenanceTool"
+			"value" : "/home/cvdlr17/Qt/MaintenanceTool"
 		},
 		{
 			"name" : "QT_QMAKE_EXECUTABLE",
@@ -6743,7 +7083,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/bin/qmake"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/bin/qmake"
 		},
 		{
 			"name" : "Qt6CorePrivate_DIR",
@@ -6755,7 +7095,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6CorePrivate"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6CorePrivate"
 		},
 		{
 			"name" : "Qt6CoreTools_DIR",
@@ -6767,7 +7107,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6CoreTools"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6CoreTools"
 		},
 		{
 			"name" : "Qt6Core_DIR",
@@ -6779,7 +7119,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6Core"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6Core"
 		},
 		{
 			"name" : "Qt6DBusPrivate_DIR",
@@ -6791,7 +7131,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6DBusPrivate"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6DBusPrivate"
 		},
 		{
 			"name" : "Qt6DBusTools_DIR",
@@ -6803,7 +7143,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6DBusTools"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6DBusTools"
 		},
 		{
 			"name" : "Qt6DBus_DIR",
@@ -6815,7 +7155,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6DBus"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6DBus"
 		},
 		{
 			"name" : "Qt6GuiPrivate_DIR",
@@ -6827,7 +7167,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6GuiPrivate"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6GuiPrivate"
 		},
 		{
 			"name" : "Qt6GuiTools_DIR",
@@ -6839,7 +7179,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6GuiTools"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6GuiTools"
 		},
 		{
 			"name" : "Qt6Gui_DIR",
@@ -6851,7 +7191,31 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6Gui"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6Gui"
+		},
+		{
+			"name" : "Qt6NetworkPrivate_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Qt6NetworkPrivate."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6NetworkPrivate"
+		},
+		{
+			"name" : "Qt6Network_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Qt6Network."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6Network"
 		},
 		{
 			"name" : "Qt6WidgetsPrivate_DIR",
@@ -6863,7 +7227,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6WidgetsPrivate"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6WidgetsPrivate"
 		},
 		{
 			"name" : "Qt6WidgetsTools_DIR",
@@ -6875,7 +7239,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6WidgetsTools"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6WidgetsTools"
 		},
 		{
 			"name" : "Qt6Widgets_DIR",
@@ -6887,7 +7251,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6Widgets"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6Widgets"
 		},
 		{
 			"name" : "Qt6_DIR",
@@ -6899,7 +7263,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "/home/nikit-chhita/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6"
+			"value" : "/home/cvdlr17/Qt/6.9.2/gcc_arm64/lib/cmake/Qt6"
 		},
 		{
 			"name" : "Vulkan_GLSLANG_VALIDATOR_EXECUTABLE",
@@ -6947,7 +7311,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "Vulkan_INCLUDE_DIR-NOTFOUND"
+			"value" : "/usr/include"
 		},
 		{
 			"name" : "Vulkan_LIBRARY",
@@ -6963,7 +7327,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "Vulkan_LIBRARY-NOTFOUND"
+			"value" : "/usr/lib/aarch64-linux-gnu/libvulkan.so"
 		},
 		{
 			"name" : "XKB_INCLUDE_DIR",
@@ -6988,6 +7352,18 @@
 			],
 			"type" : "FILEPATH",
 			"value" : "/usr/lib/aarch64-linux-gnu/libxkbcommon.so"
+		},
+		{
+			"name" : "_CMAKE_CXX_LINKER_PUSHPOP_STATE_SUPPORTED",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "linker supports push/pop state"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "TRUE"
 		},
 		{
 			"name" : "_CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED",
@@ -7035,7 +7411,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug"
+			"value" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug"
 		},
 		{
 			"name" : "untitled_IS_TOP_LEVEL",
@@ -7059,7 +7435,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/nikit-chhita/untitled"
+			"value" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor"
 		}
 	],
 	"kind" : "cache",

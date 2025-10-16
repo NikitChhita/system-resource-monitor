@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-d26ae84e1a7fd74ddb74.json",
+					"jsonFile" : "directory-.-Debug-078ca72d01d1dfb1fd40.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "untitled::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-untitled-Debug-40f341aec7c0505f7d83.json",
+					"jsonFile" : "target-untitled-Debug-c05ff061054b01d8dd18.json",
 					"name" : "untitled",
 					"projectIndex" : 0
 				},
@@ -68,8 +68,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/nikit-chhita/untitled/build/Desktop_Qt_6_9_2-Debug",
-		"source" : "/home/nikit-chhita/untitled"
+		"build" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor/build/Desktop_Qt_6_9_2-Debug",
+		"source" : "/home/cvdlr17/Desktop/SWE/system-resource-monitor"
 	},
 	"version" : 
 	{

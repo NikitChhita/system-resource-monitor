@@ -9,6 +9,7 @@
 #include "CpuMonitorUsage.h"
 #include "RamUsage.h"
 #include "Network.h"
+#include "DiskInfo.h"
 
 // CPU widget with actual monitoring
 class CpuWidget : public QWidget
@@ -184,6 +185,49 @@ private:
 
 };
 
+class DiskWidget : public QWidget
+{
+public:
+    DiskWidget(QWidget *parent = nullptr)
+        :QWidget(parent)
+    {
+        QVBoxLayout *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(24, 24, 24, 24);
+
+        QLabel *title = new QLabel("Disk Information");
+        title->setAlignment(Qt::AlignCenter);
+        title->setStyleSheet(
+            "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
+        layout->addWidget(title);
+
+        diskUsageLabel = new QLabel("Reads Completed: 0 Writes Completed: 0\n"
+                                    "Read Throughput: 1 MB/s Write Throughput: 2 MB/s");
+
+        diskUsageLabel->setAlignment(Qt::AlignCenter);
+        diskUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(diskUsageLabel);
+        layout->addStretch();
+        setStyleSheet("QWidget { background-color: #1e1e1e;}");
+
+        diskMonitor = new DiskInfo(this);
+        connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget:: updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateWrites, this, &DiskWidget::updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget:: updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateDiskInfo);
+    }
+private slots:
+    void updateDiskInfo()
+    {
+        diskUsageLabel->setText(diskMonitor->getDiskInfoString());
+    }
+private:
+    QLabel *diskUsageLabel;
+    DiskInfo *diskMonitor;
+
+};
+
+
+
 // placeholder widget for other tab pages
 class PlaceholderWidget : public QWidget
 {
@@ -257,7 +301,7 @@ void MainWindow::setupContentStack()
     // Add CPU widget with actual monitoring
     contentStack->addWidget(new CpuWidget());
     contentStack->addWidget(new RamWidget());
-    contentStack->addWidget(new PlaceholderWidget("Disk"));
+    contentStack->addWidget(new DiskWidget());
     contentStack->addWidget(new NetWidget());
     contentStack->addWidget(new PlaceholderWidget("Processes"));
 

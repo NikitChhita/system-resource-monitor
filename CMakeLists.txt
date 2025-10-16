@@ -17,7 +17,8 @@ qt_add_executable(untitled
     RamUsage.cpp
     Network.h
     Network.cpp
-
+    DiskInfo.h
+    DiskInfo.cpp
 )
 
 target_link_libraries(untitled
