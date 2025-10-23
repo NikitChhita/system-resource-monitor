@@ -10,6 +10,13 @@
 #include "RamUsage.h"
 #include "Network.h"
 #include "DiskInfo.h"
+#include "ProcessInfo.h"
+#include <QTableWidget>
+#include<QHeaderView>
+
+
+
+
 
 // CPU widget with actual monitoring
 class CpuWidget : public QWidget
@@ -226,6 +233,63 @@ private:
 
 };
 
+class ProcessWidget: public QWidget
+{
+public:
+    ProcessWidget(QWidget *parent = nullptr)
+        :QWidget(parent)
+    {
+        QVBoxLayout *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(24, 24, 24, 24);
+
+        QLabel *title = new QLabel("Process Information");
+        title->setAlignment(Qt::AlignCenter);
+        title->setStyleSheet(
+            "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
+        layout->addWidget(title);
+
+        //table for all processes
+        processTable = new QTableWidget(this);
+        processTable->setColumnCount(5);
+        processTable->setHorizontalHeaderLabels({"PID", "Name", "CPU %", "RAM", "I/O"});
+        processTable->horizontalHeader()->setStretchLastSection(true);
+        processTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+        processTable->setStyleSheet(
+            "QTableWidget { background-color: #2d2d2d; color: white; }"
+            "QHeaderView::section { background-color: #3d3d3d; color: white; padding: 5px; }"
+        );
+
+        layout->addWidget(processTable);
+        processMonitor = new ProcessInfo(this);
+        connect(processMonitor, &ProcessInfo::processesUpdated, this, &ProcessWidget::updateProcesses);
+        setStyleSheet("QWidget { background-color: #1e1e1e;}");
+
+
+    }
+private slots:
+    void updateProcesses(std::vector<ProcessUsage> processes)
+    {
+        qDebug() << "updateProcesses called with" << processes.size();
+        processTable->setRowCount(processes.size());
+        for(size_t i = 0; i < processes.size(); ++i)
+        {
+            const ProcessUsage &proc = processes[i];
+            qDebug() << "Process" << i << ":" << proc.PID << proc.name;
+
+            processTable->setItem(i, 0, new QTableWidgetItem(QString::number(proc.PID)));
+            processTable->setItem(i, 1, new QTableWidgetItem(proc.name));
+            processTable->setItem(i, 2, new QTableWidgetItem(QString::number(proc.cpuUsage, 'f', 2 )));
+            processTable->setItem(i, 3, new QTableWidgetItem(QString::number(proc.ramUsage, 'f', 2)));
+            processTable->setItem(i, 4, new QTableWidgetItem(QString("%1 / %2").arg(proc.bytesRead).arg(proc.bytesWritten)));
+
+        }
+    }
+
+private:
+    QTableWidget *processTable;
+    ProcessInfo *processMonitor;
+};
+
 
 
 // placeholder widget for other tab pages
@@ -303,7 +367,7 @@ void MainWindow::setupContentStack()
     contentStack->addWidget(new RamWidget());
     contentStack->addWidget(new DiskWidget());
     contentStack->addWidget(new NetWidget());
-    contentStack->addWidget(new PlaceholderWidget("Processes"));
+    contentStack->addWidget(new ProcessWidget());
 
 
     // Add placeholder widgets for other performance tabs
