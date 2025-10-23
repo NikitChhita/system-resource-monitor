@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QHBoxLayout>
+#include "UsageGraph.h"
 #include <QLabel>
 #include <QListWidget>
 #include <QPalette>
@@ -28,6 +29,12 @@ public:
             "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
         layout->addWidget(title);
 
+        // Create Usage Graph
+        cpuGraph = new UsageGraph("CPU Usage", 0.0, 100.0, "%", this);
+        cpuGraph->setMinimumHeight(350);
+        layout->addWidget(cpuGraph);
+        cpuGraph->setMaximumWidth(800);  // Prevent horizontal stretching
+
         // CPU usage display
         cpuUsageLabel = new QLabel("Overall CPU Usage: 0.0%");
         cpuUsageLabel->setAlignment(Qt::AlignCenter);
@@ -46,12 +53,15 @@ private slots:
     void updateUsage(double usage)
     {
         cpuUsageLabel->setText(
-            QString("Overall CPU Usage: %1%").arg(QString::number(usage, 'f', 1)));
+          QString("Overall CPU Usage: %1%").arg(QString::number(usage, 'f', 1)));
+          cpuGraph->addUtilizationValue(usage); // giving the graph the cpu data
+
     }
 
 private:
     QLabel *cpuUsageLabel;
     CpuMonitorUsage *cpuMonitor;
+    UsageGraph *cpuGraph;
 };
 
 // Network widget
