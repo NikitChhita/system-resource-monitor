@@ -13,12 +13,10 @@ public:
     explicit networkStats(QObject *parent = nullptr);
     ~networkStats() = default;
 
-    QString getNetSend() const { return sendSpeed; }
-    QString getNetReceive() const { return receiveSpeed; }
     void getIfaceData(QString interface);
 
 signals:
-    void updatedThroughput(QString received, QString sent);
+    void updatedThroughput(quint64 receivedBytes, QString receivedSpeed, quint64 sentBytes, QString sentSpeed);
     void updateIfaceData(QString name, QString type, QString ipv6, QString ipv4);
 
 private slots:
@@ -26,8 +24,6 @@ private slots:
 
 private:
     QTimer *m_timer;
-    QString receiveSpeed;
-    QString sendSpeed;
     quint64 current_rxBytes;
     quint64 current_txBytes;
     quint64 last_rxBytes;
