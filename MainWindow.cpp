@@ -279,8 +279,9 @@ private slots:
             processTable->setItem(i, 0, new QTableWidgetItem(QString::number(proc.PID)));
             processTable->setItem(i, 1, new QTableWidgetItem(proc.name));
             processTable->setItem(i, 2, new QTableWidgetItem(QString::number(proc.cpuUsage, 'f', 2 )));
-            processTable->setItem(i, 3, new QTableWidgetItem(QString::number(proc.ramUsage, 'f', 2)));
-            processTable->setItem(i, 4, new QTableWidgetItem(QString("%1 / %2").arg(proc.bytesRead).arg(proc.bytesWritten)));
+            processTable->setItem(i, 3, new QTableWidgetItem(QString::number(proc.ramUsage, 'f', 2) + " MB"));
+            processTable->setItem(i, 4, new QTableWidgetItem("Bytes Read: " + QString("%1").arg(proc.bytesRead) +
+                                                             " Bytes Written: " + QString("%1").arg(proc.bytesWritten)));
 
         }
     }

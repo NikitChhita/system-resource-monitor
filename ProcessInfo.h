@@ -16,7 +16,6 @@ struct ProcessUsage
     long bytesRead;
     long bytesWritten;
 
-
 };
 class ProcessInfo: public QObject
 {
@@ -25,31 +24,37 @@ public:
     explicit ProcessInfo(QObject *parent = nullptr);
     ~ProcessInfo() = default;
     QString getProcessName(int pid);
-    //double getCPUUsage() const{return cpuUsage;}
-    //double getRAMUsage() const{return ramUsage;}
-   // long getBytesRead() const {return bytesRead;}
-   // long getBytesWritten() const{return bytesRead;}
+    double getCPUUsage(int pid);
+    double getRAMUsage(int pid);
+    std::pair<long, long> getDiskInfo(int pid);
 
 
 
 signals:
-    //void cpuUsageUpdated(double cpuUsage);
+    void cpuUsageUpdated(double cpuUsage);
     //void ramUsageUpdated(double ramUsage);
     //void diskInfoUpdated(long bytesRead, long bytesWritten);
-    void processesUpdated(std::vector<ProcessInfo> processes);
+    void processesUpdated(std::vector<ProcessUsage> processes);
 
 private slots:
     void updateProcessInfo();
 
 private:
     QTimer *m_timer;
+    struct ProcessCPUData
+    {
+        double utime;
+        double stime;
+        double uptime;
+
+    };
+    QMap <int, ProcessCPUData> previousCPUData;
+    std::vector <QDir> getProcesses();
+    bool containsLetters(const QString &word);
     //double cpuUsage;
     //double ramUsage;
     //long bytesRead;
     //long bytesWritten;
-
-    std::vector <QDir> getProcesses();
-    bool containsLetters(QString word);
 
 
 };
