@@ -19,6 +19,8 @@ qt_add_executable(untitled
     Network.cpp
     DiskInfo.h
     DiskInfo.cpp
+    ProcessInfo.h
+    ProcessInfo.cpp
 )
 
 target_link_libraries(untitled

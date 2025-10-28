@@ -17,6 +17,7 @@ struct ProcessUsage
     long bytesWritten;
 
 };
+
 class ProcessInfo: public QObject
 {
     Q_OBJECT
@@ -31,7 +32,7 @@ public:
 
 
 signals:
-    void cpuUsageUpdated(double cpuUsage);
+    //void cpuUsageUpdated(double cpuUsage);
     //void ramUsageUpdated(double ramUsage);
     //void diskInfoUpdated(long bytesRead, long bytesWritten);
     void processesUpdated(std::vector<ProcessUsage> processes);

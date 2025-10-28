@@ -137,7 +137,6 @@ double ProcessInfo::getCPUUsage(int pid)
     ProcessCPUData prevData = previousCPUData[pid];
     double timeDelta = currentUptime - prevData.uptime;
     double cpuTimeDelta = (stime + utime) - (prevData.utime + prevData.stime);
-
     double cpuUsage = (cpuTimeDelta / (timeDelta * SYSTEM_PROCESSORS))* 100;
 
     ProcessCPUData newData;
