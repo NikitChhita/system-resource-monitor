@@ -21,6 +21,8 @@ qt_add_executable(untitled
     DiskInfo.cpp
     ProcessInfo.h
     ProcessInfo.cpp
+    UsageGraph.h
+    UsageGraph.cpp
 )
 
 target_link_libraries(untitled

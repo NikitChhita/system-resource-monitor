@@ -1,18 +1,18 @@
 #include "Network.h"
-#include <QFile>
-#include <QTextStream>
 #include <QDebug>
-#include <QNetworkInterface>
+#include <QFile>
 #include <QHostAddress>
+#include <QNetworkInterface>
+#include <QTextStream>
 
 networkStats::networkStats(QObject *parent)
     : QObject(parent)
     , current_rxBytes(0) //current CPU usage to 0.0 to start
-    , current_txBytes(0)      //previous total CPU time (0 for now)
-    , m_firstRun(true)    //flag to skip first the reading
+    , current_txBytes(0) //previous total CPU time (0 for now)
+    , m_firstRun(true)   //flag to skip first the reading
 {
     m_timer = new QTimer(this); //timer object
-    //everytime timer fires, updateCpuUsage gets called to update our usage
+    //everytime timer fires, updateNetStats and getIfaceData retrieve and emit their data.
     QString iface = "lo"; // defaults to loopback interface
 
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
@@ -24,7 +24,7 @@ networkStats::networkStats(QObject *parent)
         }
     }
 
-    connect(m_timer, &QTimer::timeout, this, [this, iface](){
+    connect(m_timer, &QTimer::timeout, this, [this, iface]() {
         updateNetStats(iface);
         getIfaceData(iface);
     });
@@ -42,7 +42,7 @@ void networkStats::getIfaceData(QString interface)
     ifaceName = interface;
 
     //Determines the connection type based on the characters in the interface (unique to different connection types)
-    if (interface.contains("enp")){
+    if (interface.contains("enp")) {
         ifaceType = "Ethernet (PCIE)";
     } else if (interface.contains("ens")) {
         ifaceType = "Ethernet (Hot-plug)";
@@ -82,7 +82,7 @@ void networkStats::getIfaceData(QString interface)
     }
 
     //Signals for the page to update the interface data
-    emit updateIfaceData(ifaceName,ifaceType,ipv6Addr,ipv4Addr);
+    emit updateIfaceData(ifaceName, ifaceType, ipv6Addr, ipv4Addr);
 }
 
 void networkStats::updateNetStats(QString interface)
@@ -108,34 +108,28 @@ void networkStats::updateNetStats(QString interface)
     //Skips first run to get a baseline for the next run
     if (!m_firstRun) {
         //Download speed
-        double rxSpeed = (current_rxBytes - last_rxBytes) * 1000.0 / 1000 / 1024; // changes from bytes/elapsed time to bytes/sec, then to kb/sec
-        if (rxSpeed >= 1024 && rxSpeed < 1048576){
-            rxSpeed = rxSpeed / 1024;
+        double rxSpeed = (current_rxBytes - last_rxBytes) * 1000.0 / 1000/ 1000; // changes from bytes/elapsed time to bytes/sec, then to kb/sec
+        if (rxSpeed >= 1000 && rxSpeed < 1000000) {
+            rxSpeed = rxSpeed / 1000;
             rxSize = "MB";
-        } else if (rxSpeed >= 1048576){
-            rxSpeed = rxSpeed / 1048576;
+        } else if (rxSpeed >= 1000000) {
+            rxSpeed = rxSpeed / 1000000;
             rxSize = "GB";
         }
 
-        receiveSpeed = (QString("%1 %2/s").arg(QString::number(rxSpeed, 'f', 2), rxSize));
-
-
-
         //Upload speed
-        double txSpeed = (current_txBytes - last_txBytes) * 1000.0 / 1000 / 1024;
-        if (txSpeed >= 1024 && txSpeed < 1048576){
-            txSpeed = txSpeed / 1024;
+        double txSpeed = (current_txBytes - last_txBytes) * 1000.0 / 1000 / 1000;
+        if (txSpeed >= 1000 && txSpeed < 1000000) {
+            txSpeed = txSpeed / 1000;
             txSize = "MB";
-        } else if (txSpeed >= 1048576){
-            txSpeed = txSpeed / 1048576;
+        } else if (txSpeed >= 1000000) {
+            txSpeed = txSpeed / 1000000;
             txSize = "GB";
         }
-        sendSpeed = (QString("%1 %2/s").arg(QString::number(txSpeed, 'f', 2), txSize));
 
         //Emits signal with receive and send speeds for throughput (QStrings)
-        emit updatedThroughput(receiveSpeed,sendSpeed);
+        emit updatedThroughput(rxSpeed, rxSize, txSpeed, txSize);
     }
-
 
     //Updates existing throughput info with current info
     last_txBytes = current_txBytes;

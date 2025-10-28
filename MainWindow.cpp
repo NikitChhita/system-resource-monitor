@@ -7,15 +7,13 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include "CpuMonitorUsage.h"
-#include "RamUsage.h"
-#include "Network.h"
 #include "DiskInfo.h"
 #include "ProcessInfo.h"
 #include <QTableWidget>
 #include<QHeaderView>
-
-
-
+#include "Network.h"
+#include "RamUsage.h"
+#include "UsageGraph.h"
 
 
 // CPU widget with actual monitoring
@@ -34,6 +32,12 @@ public:
         title->setStyleSheet(
             "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
         layout->addWidget(title);
+
+        // Create Usage Graph
+        cpuGraph = new UsageGraph("CPU Usage", 0.0, 100.0, "%", this);
+        cpuGraph->setMinimumHeight(350);
+        layout->addWidget(cpuGraph);
+        cpuGraph->setMaximumWidth(800); // Prevent horizontal stretching
 
         // CPU usage display
         cpuUsageLabel = new QLabel("Overall CPU Usage: 0.0%");
@@ -54,11 +58,13 @@ private slots:
     {
         cpuUsageLabel->setText(
             QString("Overall CPU Usage: %1%").arg(QString::number(usage, 'f', 1)));
+        cpuGraph->addUtilizationValue(usage); // giving the graph the cpu data
     }
 
 private:
     QLabel *cpuUsageLabel;
     CpuMonitorUsage *cpuMonitor;
+    UsageGraph *cpuGraph;
 };
 
 // Network widget
@@ -77,6 +83,24 @@ public:
         title->setStyleSheet(
             "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
         layout->addWidget(title);
+
+        // container for graphs
+        QHBoxLayout *graphLayout = new QHBoxLayout();
+        graphLayout->setSpacing(20); // Add some spacing between graphs
+
+        // bytes received graph
+        recvGraph = new UsageGraph("Received", 0, 1000, " KB/s", this);
+        recvGraph->setMinimumHeight(350);
+        recvGraph->setMaximumWidth(400); // Prevent horizontal stretching
+        graphLayout->addWidget(recvGraph);
+
+        // bytes sent graph
+        sentGraph = new UsageGraph("Sent", 0, 1000, " KB/s", this);
+        sentGraph->setMinimumHeight(350);
+        sentGraph->setMaximumWidth(400); // Prevent horizontal stretching
+        graphLayout->addWidget(sentGraph);
+        // adds graphs to main layout
+        layout->addLayout(graphLayout);
 
         // interface's name display
         interfaceLabel = new QLabel("Adapter: N/A");
@@ -125,23 +149,40 @@ public:
 private slots:
     void updateNetSpecs(QString iface, QString type, QString ipv6, QString ipv4)
     {
-        interfaceLabel->setText(
-            QString("Adapter: %1").arg(iface));
-            connectionLabel->setText(
-                QString("Connection Type: %1").arg(type));
-            ipv6Label->setText(
-                QString("IPv6 Address: %1").arg(ipv6));
-            ipv4Label->setText(
-                QString("IPv4 Address: %1").arg(ipv4));
+        interfaceLabel->setText(QString("Adapter:  %1").arg(iface));
+        connectionLabel->setText(QString("Connection Type:  %1").arg(type));
+        ipv6Label->setText(QString("IPv6 Address:  %1").arg(ipv6));
+        ipv4Label->setText(QString("IPv4 Address:  %1").arg(ipv4));
     }
 
-    void updateNetData(QString received, QString sent)
+    void updateNetData(quint64 recBytes, QString recSpeed, quint64 senBytes, QString senSpeed)
     {
-        bytesReceivedLabel->setText(
-            QString("Received: %1").arg(received));
-        bytesSentLabel->setText(
-            QString("Sent: %1").arg(sent));
+        bytesReceivedLabel->setText(QString("Received:  %1 %2/s").arg(QString::number(recBytes, 'f', 2), recSpeed));
+        bytesSentLabel->setText(QString("Sent:  %1 %2/s").arg(QString::number(senBytes, 'f', 2), senSpeed));
+
+        if(recSpeed == "KB"){
+            recvGraph->setRange(0,1000);
+        } else if(recSpeed == "MB"){
+            recvGraph->setRange(0,10000);
+        } else if(recSpeed == "GB"){
+            recvGraph->setRange(0,100000);
+        };
+
+        if(senSpeed == "KB"){
+            sentGraph->setRange(0,1000);
+        } else if(senSpeed == "MB"){
+            sentGraph->setRange(0,10000);
+        } else if(senSpeed == "GB"){
+            sentGraph->setRange(0,100000);
+        };
+
+        recvGraph->setUnit(QString(" %1/s").arg(recSpeed));
+        recvGraph->addUtilizationValue(recBytes); // gives received graph its data
+
+        sentGraph->setUnit(QString(" %1/s").arg(senSpeed));
+        sentGraph->addUtilizationValue(senBytes); // gives sent graph its data
     }
+
 private:
     QLabel *interfaceLabel;
     QLabel *connectionLabel;
@@ -151,14 +192,15 @@ private:
     QLabel *bytesSentLabel;
     networkStats *interfaceSpecs;
     networkStats *interfaceMonitor;
+    UsageGraph *recvGraph;
+    UsageGraph *sentGraph;
 };
 
-
-class RamWidget: public QWidget
+class RamWidget : public QWidget
 {
 public:
     RamWidget(QWidget *parent = nullptr)
-        :QWidget(parent)
+        : QWidget(parent)
     {
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
@@ -182,21 +224,18 @@ public:
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
     }
 private slots:
-    void updateUsage(long usedRamKB)
-    {
-        ramUsageLabel->setText(ramMonitor->getRamUsageString());
-    }
+    void updateUsage(long usedRamKB) { ramUsageLabel->setText(ramMonitor->getRamUsageString()); }
+
 private:
     QLabel *ramUsageLabel;
     RamUsage *ramMonitor;
-
 };
 
 class DiskWidget : public QWidget
 {
 public:
     DiskWidget(QWidget *parent = nullptr)
-        :QWidget(parent)
+        : QWidget(parent)
     {
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
@@ -217,21 +256,19 @@ public:
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
 
         diskMonitor = new DiskInfo(this);
-        connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget:: updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
         connect(diskMonitor, &DiskInfo::updateWrites, this, &DiskWidget::updateDiskInfo);
-        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget:: updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget::updateDiskInfo);
         connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateDiskInfo);
     }
 private slots:
-    void updateDiskInfo()
-    {
-        diskUsageLabel->setText(diskMonitor->getDiskInfoString());
-    }
+    void updateDiskInfo() { diskUsageLabel->setText(diskMonitor->getDiskInfoString()); }
+
 private:
     QLabel *diskUsageLabel;
     DiskInfo *diskMonitor;
-
 };
+
 
 class ProcessWidget: public QWidget
 {
@@ -290,6 +327,7 @@ private:
     QTableWidget *processTable;
     ProcessInfo *processMonitor;
 };
+
 
 
 
@@ -369,7 +407,6 @@ void MainWindow::setupContentStack()
     contentStack->addWidget(new DiskWidget());
     contentStack->addWidget(new NetWidget());
     contentStack->addWidget(new ProcessWidget());
-
 
     // Add placeholder widgets for other performance tabs
     QStringList tabs = {"Disk", "Processes"};
