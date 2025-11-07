@@ -16,9 +16,11 @@ public:
 
     long getCurrentRamUsage() const {return totalUsedRam;}
     QString getRamUsageString() const;
+    long getTotalSysRam() const {return totalSysRam;}
+
 
 signals:
-    void ramUsageUpdated(double usage);
+    void ramUsageUpdated(long usedRamKB);
 
 private slots:
     void updateRamUsage();
@@ -27,9 +29,8 @@ private:
     QTimer *m_Timer;
 
     long totalUsedRam; //  = totalSysRam - freeRam - buffers - cachedRam
-    long totalSysRam;
     long freeRAM;
-
+    long totalSysRam;
     long buffers;
     long cachedRam;
     bool m_firstRun;

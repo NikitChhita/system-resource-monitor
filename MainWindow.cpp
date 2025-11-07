@@ -202,6 +202,7 @@ public:
     RamWidget(QWidget *parent = nullptr)
         : QWidget(parent)
     {
+
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
 
@@ -212,6 +213,9 @@ public:
             "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
         layout->addWidget(title);
 
+
+        // Create Usage Graph
+
         ramUsageLabel = new QLabel("Memory Used: 0.0 GB / 0.0 GB");
         ramUsageLabel->setAlignment(Qt::AlignCenter);
         ramUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
@@ -220,15 +224,28 @@ public:
         ramMonitor = new RamUsage(this);
         connect(ramMonitor, &RamUsage::ramUsageUpdated, this, &RamWidget::updateUsage);
 
+        double range = (ramMonitor->getTotalSysRam()) / (1024.0 * 1024.0);
+        ramGraph = new UsageGraph("Ram Usage", 0.0, range, "GB", this);
+        ramGraph->setMinimumHeight(350);
+        layout->addWidget(ramGraph);
+        ramGraph->setMaximumWidth(800); // Prevent horizontal stretching
+
         layout->addStretch();
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
     }
 private slots:
-    void updateUsage(long usedRamKB) { ramUsageLabel->setText(ramMonitor->getRamUsageString()); }
+    void updateUsage(long usedRamKB) {
+        double usedRamGB = usedRamKB / (1024.0 * 1024.0);
+        ramUsageLabel->setText(ramMonitor->getRamUsageString());
+        ramGraph->addUtilizationValue(usedRamGB); // giving the graph the cpu data
+    }
+
+
 
 private:
     QLabel *ramUsageLabel;
     RamUsage *ramMonitor;
+    UsageGraph *ramGraph;
 };
 
 class DiskWidget : public QWidget
@@ -256,17 +273,58 @@ public:
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
 
         diskMonitor = new DiskInfo(this);
-        connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
+        //connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
         connect(diskMonitor, &DiskInfo::updateWrites, this, &DiskWidget::updateDiskInfo);
-        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget::updateDiskInfo);
-        connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget::updateReadThroughputGraph);
+        connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateWriteThroughputGraph);
+
+        // container for graphs
+        QHBoxLayout *graphLayout = new QHBoxLayout();
+        graphLayout->setSpacing(20); // Add some spacing between graphs
+
+        readGraph = new UsageGraph("Read Throughput", 0.0, 100.00, "MB/s", this);
+        readGraph->setMinimumHeight(350);
+        layout->addWidget(readGraph);
+        readGraph->setMaximumWidth(400); // Prevent horizontal stretching
+        graphLayout->addWidget(readGraph);
+        layout->addLayout(graphLayout);
+
+        writeGraph = new UsageGraph("Write Throughput", 0.0, 100.00, "MB/s", this);
+        writeGraph->setMinimumHeight(350);
+        layout->addWidget(writeGraph);
+        writeGraph->setMaximumWidth(400); // Prevent horizontal stretching
+        graphLayout->addWidget(writeGraph);
+
+
+
+
     }
 private slots:
-    void updateDiskInfo() { diskUsageLabel->setText(diskMonitor->getDiskInfoString()); }
+    void updateDiskInfo()
+    {
+        diskUsageLabel->setText(diskMonitor->getDiskInfoString());
+
+    }
+
+    void updateReadThroughputGraph(double readBytesPerSec)
+    {
+        double readMBps = readBytesPerSec / (1024.0 * 1024.0);
+        readGraph->addUtilizationValue(readMBps);
+    }
+
+    void updateWriteThroughputGraph(double writtenBytesPerSec)
+    {
+        double writeMBps = writtenBytesPerSec / (1024.0 * 1024.0);
+        writeGraph->addUtilizationValue(writeMBps);
+
+    }
+
 
 private:
     QLabel *diskUsageLabel;
     DiskInfo *diskMonitor;
+    UsageGraph *readGraph;
+    UsageGraph *writeGraph;
 };
 
 

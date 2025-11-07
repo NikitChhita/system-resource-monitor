@@ -44,7 +44,8 @@ void DiskInfo::updateDiskInfo()
     for (int i = 0; i < lines.size() - 1; i++) {
         QString line = lines[i];
         QStringList values = line.split(whitespaceRegex, Qt::SkipEmptyParts);
-        if (values[2] == "vda") {
+        QChar lastChar = values[2].at(values[2].length()-1);
+        if (!(lastChar.isDigit())) {
             readIOPS = values[3].toLong();
             writeIOPS = values[7].toLong();
             currentSectorsRead = values[5].toLong();
@@ -61,8 +62,8 @@ void DiskInfo::updateDiskInfo()
         prevTime = currentTime;
         firstRun = false;
 
-        emit updateReads(readIOPS);
-        emit updateWrites(writeIOPS);
+        //emit updateReads(readIOPS);
+        //emit updateWrites(writeIOPS);
         return;
     }
 

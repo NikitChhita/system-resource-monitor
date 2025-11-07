@@ -64,6 +64,7 @@ void RamUsage::updateRamUsage()
 
 
     totalUsedRam = totalSysRam - freeRAM - buffers - cachedRam;
+
     emit ramUsageUpdated(totalUsedRam);
 
 }
@@ -75,3 +76,7 @@ QString RamUsage::getRamUsageString() const
     return QString("Memory Used: %1 GB/ %2 GB").arg(usedGB, 0, 'f', 1).arg(totalGB, 0,  'f', 1);
 
 }
+
+
+
+
