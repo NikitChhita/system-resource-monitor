@@ -5,6 +5,7 @@
 #include <QRegularExpression>
 #include <QTextStream>
 #include <sys/sysinfo.h>
+#include<sys/statvfs.h>
 
 DiskInfo::DiskInfo(QObject *parent)
     : QObject(parent)
@@ -15,6 +16,8 @@ DiskInfo::DiskInfo(QObject *parent)
     , prevSectorsRead(0)
     , prevSectorsWritten(0)
     , prevTime(0)
+    , totalDiskSpace(0.0)
+    , availDiskSpace(0.0)
     , firstRun(true)
 
 {
@@ -22,6 +25,22 @@ DiskInfo::DiskInfo(QObject *parent)
     connect(m_timer, &QTimer::timeout, this, &DiskInfo::updateDiskInfo);
     m_timer->start(1000);
     updateDiskInfo();
+    getDiskSpaceInfo();
+
+}
+
+void DiskInfo::getDiskSpaceInfo()
+{
+    struct statvfs buf;
+    const char *path = "/";
+    if(statvfs(path, &buf) == 0)
+    {
+        totalDiskSpace = (buf.f_blocks * buf.f_bsize) / (1024.0 * 1024.0 * 1024.0);
+        availDiskSpace = (buf.f_bavail * buf.f_bsize) / (1024.0 * 1024.0 * 1024.0);
+
+    }
+
+
 }
 
 void DiskInfo::updateDiskInfo()
@@ -45,6 +64,7 @@ void DiskInfo::updateDiskInfo()
         QString line = lines[i];
         QStringList values = line.split(whitespaceRegex, Qt::SkipEmptyParts);
         QChar lastChar = values[2].at(values[2].length()-1);
+        //last line was if(values[2] == "vda")
         if (!(lastChar.isDigit())) {
             readIOPS = values[3].toLong();
             writeIOPS = values[7].toLong();
@@ -87,15 +107,20 @@ void DiskInfo::updateDiskInfo()
     }
 }
 
-QString DiskInfo::getDiskInfoString() const
+
+
+QString DiskInfo::getDiskInfoString()
 {
     double readMBps = readThroughput / (1024.0 * 1024.0);
     double writeMBps = writtenThroughput / (1024.0 * 1024.0);
-
     return QString("Reads Completed: %0 Writes Completed: %1\n"
-                   "Read Throughput: %2 MB/s Write Throughput: %3 MB/s")
+                   "Read Throughput: %2 MB/s Write Throughput: %3 MB/s \n"
+                   "Available Disk Space: %4 GB\n"
+                   "Total Disk Space: %5 GB")
         .arg(readIOPS)
         .arg(writeIOPS)
         .arg(readMBps, 0, 'f', 2)
-        .arg(writeMBps, 0, 'f', 2);
+        .arg(writeMBps, 0, 'f', 2)
+        .arg(availDiskSpace, 0, 'f', 2)
+        .arg(totalDiskSpace,0, 'f', 2 );
 }

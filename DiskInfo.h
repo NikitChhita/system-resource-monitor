@@ -13,8 +13,8 @@ public:
     explicit DiskInfo(QObject *parent = nullptr);
     ~DiskInfo() = default;
 
-    QString getDiskInfoString() const;
-
+    QString getDiskInfoString();
+    void getDiskSpaceInfo();
     //long getReadIOPS() const {return readIOPS;}
     //long getWriteIOPS() const {return writeIOPS;} // indicate writes and reads completed
 
@@ -44,6 +44,10 @@ private:
     long prevSectorsWritten;
 
     long prevTime;
+
+    double totalDiskSpace;
+    double availDiskSpace;
+
     bool firstRun;
 
 

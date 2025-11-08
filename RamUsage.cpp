@@ -73,7 +73,11 @@ QString RamUsage::getRamUsageString() const
 {
     double usedGB = totalUsedRam / (1024.0 * 1024.0);
     double totalGB = totalSysRam / (1024.0 * 1024.0);
-    return QString("Memory Used: %1 GB/ %2 GB").arg(usedGB, 0, 'f', 1).arg(totalGB, 0,  'f', 1);
+
+    double availableGB = (totalGB - usedGB);
+    return QString("Memory Used: %1 GB/ %2 GB\n"
+                   "Total Memory: %3 GB Available Memory: %4 GB ")
+        .arg(usedGB, 0, 'f', 2).arg(totalGB, 0,  'f', 2).arg(totalGB, 0, 'f', 2).arg(availableGB, 0, 'f', 2);
 
 }
 

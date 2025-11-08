@@ -213,22 +213,20 @@ public:
             "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
         layout->addWidget(title);
 
-
+        ramMonitor = new RamUsage(this);
         // Create Usage Graph
+        double range = (ramMonitor->getTotalSysRam()) / (1024.0 * 1024.0);
+        ramGraph = new UsageGraph("Ram Usage", 0.0, range, "GB", this);
+        ramGraph->setMinimumHeight(350);
+        layout->addWidget(ramGraph);
+        ramGraph->setMaximumWidth(800); // Prevent horizontal stretching
 
         ramUsageLabel = new QLabel("Memory Used: 0.0 GB / 0.0 GB");
         ramUsageLabel->setAlignment(Qt::AlignCenter);
         ramUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
         layout->addWidget(ramUsageLabel);
 
-        ramMonitor = new RamUsage(this);
         connect(ramMonitor, &RamUsage::ramUsageUpdated, this, &RamWidget::updateUsage);
-
-        double range = (ramMonitor->getTotalSysRam()) / (1024.0 * 1024.0);
-        ramGraph = new UsageGraph("Ram Usage", 0.0, range, "GB", this);
-        ramGraph->setMinimumHeight(350);
-        layout->addWidget(ramGraph);
-        ramGraph->setMaximumWidth(800); // Prevent horizontal stretching
 
         layout->addStretch();
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
@@ -263,20 +261,7 @@ public:
             "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
         layout->addWidget(title);
 
-        diskUsageLabel = new QLabel("Reads Completed: 0 Writes Completed: 0\n"
-                                    "Read Throughput: 1 MB/s Write Throughput: 2 MB/s");
-
-        diskUsageLabel->setAlignment(Qt::AlignCenter);
-        diskUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
-        layout->addWidget(diskUsageLabel);
-        layout->addStretch();
-        setStyleSheet("QWidget { background-color: #1e1e1e;}");
-
         diskMonitor = new DiskInfo(this);
-        //connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
-        connect(diskMonitor, &DiskInfo::updateWrites, this, &DiskWidget::updateDiskInfo);
-        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget::updateReadThroughputGraph);
-        connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateWriteThroughputGraph);
 
         // container for graphs
         QHBoxLayout *graphLayout = new QHBoxLayout();
@@ -294,6 +279,22 @@ public:
         layout->addWidget(writeGraph);
         writeGraph->setMaximumWidth(400); // Prevent horizontal stretching
         graphLayout->addWidget(writeGraph);
+
+        diskUsageLabel = new QLabel("Reads Completed: 0 Writes Completed: 0\n"
+                                    "Read Throughput: 1 MB/s Write Throughput: 2 MB/s");
+
+        diskUsageLabel->setAlignment(Qt::AlignCenter);
+        diskUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
+        layout->addWidget(diskUsageLabel);
+
+
+        //connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateWrites, this, &DiskWidget::updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget::updateReadThroughputGraph);
+        connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateWriteThroughputGraph);
+
+        layout->addStretch();
+        setStyleSheet("QWidget { background-color: #1e1e1e;}");
 
 
 
