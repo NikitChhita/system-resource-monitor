@@ -54,6 +54,8 @@ void networkStats::getIfaceData(QString interface)
         ifaceType = "Cellular";
     } else if (interface.contains("en")) {
         ifaceType = "Ethernet";
+    } else {
+        ifaceType = "N/A";
     }
 
     //Obtains IPv6 and IPv4 info from current interface
@@ -102,29 +104,29 @@ void networkStats::updateNetStats(QString interface)
     }
 
     // Defaults to byte size in kilobytes
-    QString rxSize = "KB";
-    QString txSize = "KB";
+    QString rxSize = "Kb";
+    QString txSize = "Kb";
 
     //Skips first run to get a baseline for the next run
     if (!m_firstRun) {
         //Download speed
-        double rxSpeed = (current_rxBytes - last_rxBytes) * 1000.0 / 1000/ 1000; // changes from bytes/elapsed time to bytes/sec, then to kb/sec
+        double rxSpeed = ((current_rxBytes - last_rxBytes) * 8) / 1000; // changes from bytes/sec to bits/sec, then to kbps
         if (rxSpeed >= 1000 && rxSpeed < 1000000) {
             rxSpeed = rxSpeed / 1000;
-            rxSize = "MB";
+            rxSize = "Mb";
         } else if (rxSpeed >= 1000000) {
             rxSpeed = rxSpeed / 1000000;
-            rxSize = "GB";
+            rxSize = "Gb";
         }
 
         //Upload speed
-        double txSpeed = (current_txBytes - last_txBytes) * 1000.0 / 1000 / 1000;
+        double txSpeed = ((current_txBytes - last_txBytes) * 8) / 1000;
         if (txSpeed >= 1000 && txSpeed < 1000000) {
             txSpeed = txSpeed / 1000;
-            txSize = "MB";
+            txSize = "Mb";
         } else if (txSpeed >= 1000000) {
             txSpeed = txSpeed / 1000000;
-            txSize = "GB";
+            txSize = "Gb";
         }
 
         //Emits signal with receive and send speeds for throughput (QStrings)
