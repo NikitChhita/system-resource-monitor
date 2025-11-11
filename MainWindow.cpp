@@ -215,7 +215,7 @@ public:
 
         ramMonitor = new RamUsage(this);
         // Create Usage Graph
-        double range = (ramMonitor->getTotalSysRam()) / (1024.0 * 1024.0);
+        double const range = (ramMonitor->getTotalSysRam()) / (1024.0 * 1024.0);
         ramGraph = new UsageGraph("Ram Usage", 0.0, range, "GB", this);
         ramGraph->setMinimumHeight(350);
         layout->addWidget(ramGraph);
@@ -235,7 +235,7 @@ private slots:
     void updateUsage(long usedRamKB) {
         double usedRamGB = usedRamKB / (1024.0 * 1024.0);
         ramUsageLabel->setText(ramMonitor->getRamUsageString());
-        ramGraph->addUtilizationValue(usedRamGB); // giving the graph the cpu data
+        ramGraph->addUtilizationValue(usedRamGB);
     }
 
 

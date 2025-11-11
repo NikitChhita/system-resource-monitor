@@ -239,22 +239,21 @@ void ProcessInfo::updateProcessInfo()
     for(const QDir &dir : processDirs)
     {
         QString dirName = dir.dirName();
-        bool ok;
-        int pid = dirName.toInt(&ok);
+        //bool ok;
+        int pid = dirName.toInt();
 
-        if(ok)
-        {
-            ProcessUsage proc;
-            proc.PID = pid;
-            proc.name = getProcessName(pid);
-            proc.cpuUsage = getCPUUsage(pid);
-            proc.ramUsage = getRAMUsage(pid);
-            std::pair<long, long> diskInfo = getDiskInfo(pid);
-            proc.bytesRead = diskInfo.first;
-            proc.bytesWritten = diskInfo.second;
-
-            processes.push_back(proc);
-        }
+        //if(ok)
+        //{
+        ProcessUsage proc;
+        proc.PID = pid;
+        proc.name = getProcessName(pid);
+        proc.cpuUsage = getCPUUsage(pid);
+        proc.ramUsage = getRAMUsage(pid);
+        std::pair<long, long> diskInfo = getDiskInfo(pid);
+        proc.bytesRead = diskInfo.first;
+        proc.bytesWritten = diskInfo.second;
+        processes.push_back(proc);
+        //}
     }
 
     qDebug() << "Emitting" << processes.size() << "processes";
