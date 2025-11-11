@@ -73,11 +73,15 @@ QString RamUsage::getRamUsageString() const
 {
     double usedGB = totalUsedRam / (1024.0 * 1024.0);
     double totalGB = totalSysRam / (1024.0 * 1024.0);
-
+    double usedPercentage = (usedGB * 100) / totalGB;
     double availableGB = (totalGB - usedGB);
-    return QString("Memory Used: %1 GB/ %2 GB\n"
-                   "Total Memory: %3 GB Available Memory: %4 GB ")
-        .arg(usedGB, 0, 'f', 2).arg(totalGB, 0,  'f', 2).arg(totalGB, 0, 'f', 2).arg(availableGB, 0, 'f', 2);
+    double cachedGB = cachedRam / (1024.0 * 1024.0);
+    return QString("Memory Used: %1 GB/ %2 GB (%3%)\n"
+                   "Total Memory: %4 GB Available Memory: %5 GB\n"
+                   "Cached Memory: %6 GB")
+        .arg(usedGB, 0, 'f', 2).arg(totalGB, 0,  'f', 2)
+        .arg(usedPercentage, 0, 'f', 2).arg(totalGB, 0, 'f', 2)
+        .arg(availableGB, 0, 'f', 2).arg(cachedGB, 0, 'f', 2);
 
 }
 
