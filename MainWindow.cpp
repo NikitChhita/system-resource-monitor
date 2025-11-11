@@ -89,15 +89,15 @@ public:
         graphLayout->setSpacing(20); // Add some spacing between graphs
 
         // bytes received graph
-        recvGraph = new UsageGraph("Received", 0, 1000, " KB/s", this);
+        recvGraph = new UsageGraph("Received", 0, 1000, " Kbps", this);
         recvGraph->setMinimumHeight(350);
-        recvGraph->setMaximumWidth(400); // Prevent horizontal stretching
+        recvGraph->setMaximumWidth(400); // prevent horizontal stretching
         graphLayout->addWidget(recvGraph);
 
         // bytes sent graph
-        sentGraph = new UsageGraph("Sent", 0, 1000, " KB/s", this);
+        sentGraph = new UsageGraph("Sent", 0, 1000, " Kbps", this);
         sentGraph->setMinimumHeight(350);
-        sentGraph->setMaximumWidth(400); // Prevent horizontal stretching
+        sentGraph->setMaximumWidth(400);
         graphLayout->addWidget(sentGraph);
         // adds graphs to main layout
         layout->addLayout(graphLayout);
@@ -127,13 +127,13 @@ public:
         layout->addWidget(ipv4Label);
 
         // Received bytes display
-        bytesReceivedLabel = new QLabel("Received: 0.0 Kb/s");
+        bytesReceivedLabel = new QLabel("Received: 0.0 Kbps");
         bytesReceivedLabel->setAlignment(Qt::AlignCenter);
         bytesReceivedLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
         layout->addWidget(bytesReceivedLabel);
 
         // Sent bytes display
-        bytesSentLabel = new QLabel("Sent: 0.0 Kb/s");
+        bytesSentLabel = new QLabel("Sent: 0.0 Kbps");
         bytesSentLabel->setAlignment(Qt::AlignCenter);
         bytesSentLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
         layout->addWidget(bytesSentLabel);
@@ -155,32 +155,39 @@ private slots:
         ipv4Label->setText(QString("IPv4 Address:  %1").arg(ipv4));
     }
 
-    void updateNetData(quint64 recBytes, QString recSpeed, quint64 senBytes, QString senSpeed)
+    void updateNetData(quint64 recBits, QString recSpeed, quint64 senBits, QString senSpeed)
     {
-        bytesReceivedLabel->setText(QString("Received:  %1 %2/s").arg(QString::number(recBytes, 'f', 2), recSpeed));
-        bytesSentLabel->setText(QString("Sent:  %1 %2/s").arg(QString::number(senBytes, 'f', 2), senSpeed));
+        bytesReceivedLabel->setText(QString("Received:  %1 %2ps").arg(QString::number(recBits, 'f', 2), recSpeed));
+        bytesSentLabel->setText(QString("Sent:  %1 %2ps").arg(QString::number(senBits, 'f', 2), senSpeed));
 
-        if(recSpeed == "KB"){
+
+        if(recSpeed == "Kb"){
             recvGraph->setRange(0,1000);
-        } else if(recSpeed == "MB"){
-            recvGraph->setRange(0,10000);
-        } else if(recSpeed == "GB"){
-            recvGraph->setRange(0,100000);
+        } else if(recSpeed == "Mb"){
+            recvGraph->setRange(0,1000000);
+            recBits = recBits * 1000;
+        } else if(recSpeed == "Gb"){
+            recvGraph->setRange(0,1000000 * 1000);
+            recBits = recBits * 1000000;
         };
 
-        if(senSpeed == "KB"){
+
+        if(senSpeed == "Kb"){
             sentGraph->setRange(0,1000);
-        } else if(senSpeed == "MB"){
-            sentGraph->setRange(0,10000);
-        } else if(senSpeed == "GB"){
-            sentGraph->setRange(0,100000);
+        } else if(senSpeed == "Mb"){
+            sentGraph->setRange(0,1000000);
+        } else if(senSpeed == "Gb"){
+            senBits = senBits * 1000;
+            sentGraph->setRange(0,1000000 * 1000);
+            senBits = senBits * 1000000;
         };
 
-        recvGraph->setUnit(QString(" %1/s").arg(recSpeed));
-        recvGraph->addUtilizationValue(recBytes); // gives received graph its data
 
-        sentGraph->setUnit(QString(" %1/s").arg(senSpeed));
-        sentGraph->addUtilizationValue(senBytes); // gives sent graph its data
+        recvGraph->setUnit(QString(" %1ps").arg(recSpeed));
+        recvGraph->addUtilizationValue(recBits); // gives received graph its data
+
+        sentGraph->setUnit(QString(" %1ps").arg(senSpeed));
+        sentGraph->addUtilizationValue(senBits); // gives sent graph its data
     }
 
 private:

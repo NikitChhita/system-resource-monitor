@@ -1,7 +1,7 @@
 #include "UsageGraph.h"
+#include <QApplication>
 #include <QPainter>
 #include <QPainterPath>
-#include <QApplication>
 #include <QPalette>
 #include <utility>
 
@@ -13,17 +13,18 @@ UsageGraph::UsageGraph(QString title,
                        QString maxValueLabel,
                        QString unit,
                        QWidget *parent)
-    : QWidget(parent),
-    m_title(std::move(title)),
-    m_minValue(minValue),
-    m_maxValue(maxValue),
-    m_minValueLabel(std::move(minValueLabel)),
-    m_maxValueLabel(std::move(maxValueLabel)),
-    m_unit(std::move(unit)),
-    m_maxPoints(60),
-    m_displayLabels(displayLabels)
+    : QWidget(parent)
+    , m_title(std::move(title))
+    , m_minValue(minValue)
+    , m_maxValue(maxValue)
+    , m_minValueLabel(std::move(minValueLabel))
+    , m_maxValueLabel(std::move(maxValueLabel))
+    , m_unit(std::move(unit))
+    , m_maxPoints(60)
+    , m_displayLabels(displayLabels)
 {
     m_history.fill(0, m_maxPoints);
+    m_rawHistory.fill(minValue, m_maxPoints);
     m_accentColor = QApplication::palette().highlight().color();
     setMinimumHeight(displayLabels ? 180 : 40);
     setMinimumWidth(displayLabels ? 220 : 60);
@@ -32,22 +33,18 @@ UsageGraph::UsageGraph(QString title,
 
 UsageGraph::UsageGraph(bool displayLabels, QWidget *parent)
     : UsageGraph("", displayLabels, 0.0, 100.0, "0", "100", "%", parent)
-{
-}
+{}
 
 UsageGraph::UsageGraph(QString title, double minValue, double maxValue, QString unit, QWidget *parent)
-    : UsageGraph(std::move(title), true,
-                 minValue, maxValue, QString::number(minValue), QString::number(maxValue),
-                 std::move(unit), parent)
-{
-}
-
-UsageGraph::UsageGraph(QString title, double minValue, double maxValue,
-                       QString minValueLabel, QString maxValueLabel, QString unit, QWidget* parent)
-    : UsageGraph(std::move(title), true, minValue, maxValue, std::move(minValueLabel),
-                 std::move(maxValueLabel), std::move(unit), parent)
-{
-}
+    : UsageGraph(std::move(title),
+                 true,
+                 minValue,
+                 maxValue,
+                 QString::number(minValue),
+                 QString::number(maxValue),
+                 std::move(unit),
+                 parent)
+{}
 
 void UsageGraph::setTitle(const QString &title)
 {
@@ -59,6 +56,15 @@ void UsageGraph::setRange(double minValue, double maxValue)
 {
     m_minValue = minValue;
     m_maxValue = maxValue;
+
+    // renormalizes history every time range is changed
+    m_history.clear();
+    for (double rawValue : m_rawHistory) {
+        double clamped = qBound(m_minValue, rawValue, m_maxValue);
+        double normalized = ((clamped - m_minValue) / (m_maxValue - m_minValue)) * 100.0;
+        m_history.append(normalized);
+    }
+
     update();
 }
 
@@ -77,6 +83,10 @@ void UsageGraph::setUnit(const QString &unit)
 
 void UsageGraph::addUtilizationValue(double value)
 {
+    if (m_rawHistory.size() >= m_maxPoints)
+        m_rawHistory.removeFirst();
+    m_rawHistory.append(value);
+
     value = qBound(m_minValue, value, m_maxValue);
     double normalized = ((value - m_minValue) / (m_maxValue - m_minValue)) * 100.0;
 
@@ -104,8 +114,7 @@ void UsageGraph::paintEvent(QPaintEvent *event)
     int graphHeight = h - (topPadding + bottomPadding);
     int graphWidth = w - (leftPadding + rightPadding);
 
-    if (m_displayLabels)
-    {
+    if (m_displayLabels) {
         QColor textColor = QColor(255, 255, 255, 200);
         QFont titleFont = font();
         titleFont.setPointSize(10);
@@ -133,28 +142,24 @@ void UsageGraph::paintEvent(QPaintEvent *event)
 
     double xStep = static_cast<double>(graphWidth) / (m_maxPoints - 1);
 
-    if (m_displayLabels)
-    {
+    if (m_displayLabels) {
         QPen gridPen(QColor(255, 255, 255, 18));
         gridPen.setWidth(0.5);
         gridPen.setStyle(Qt::SolidLine);
         painter.setPen(gridPen);
 
-        for (int i = 0; i <= 10; i++)
-        {
+        for (int i = 0; i <= 10; i++) {
             int y = topPadding + graphHeight - (i * graphHeight / 10);
             painter.drawLine(leftPadding, y, w - rightPadding, y);
         }
 
-        for (int i = 0; i <= m_maxPoints; i += 5)
-        {
+        for (int i = 0; i <= m_maxPoints; i += 5) {
             int x = static_cast<int>(leftPadding + i * xStep);
             painter.drawLine(x, topPadding, x, h - bottomPadding);
         }
     }
 
-    if (!m_history.isEmpty())
-    {
+    if (!m_history.isEmpty()) {
         QPainterPath path;
         QPainterPath fillPath;
 
@@ -164,8 +169,7 @@ void UsageGraph::paintEvent(QPaintEvent *event)
         path.moveTo(initialX, initialY);
         fillPath.lineTo(initialX, initialY);
 
-        for (int i = 1; i < m_history.size(); ++i)
-        {
+        for (int i = 1; i < m_history.size(); ++i) {
             double x1 = leftPadding + (i - 1) * xStep;
             double y1 = topPadding + graphHeight - (m_history.at(i - 1) * graphHeight / 100.0);
             double x2 = leftPadding + i * xStep;
@@ -176,7 +180,8 @@ void UsageGraph::paintEvent(QPaintEvent *event)
             fillPath.quadTo(x1, y1, cx, cy);
         }
 
-        fillPath.lineTo(leftPadding + static_cast<double>(m_history.size() - 1) * xStep, h - bottomPadding);
+        fillPath.lineTo(leftPadding + static_cast<double>(m_history.size() - 1) * xStep,
+                        h - bottomPadding);
         fillPath.lineTo(leftPadding, h - bottomPadding);
 
         QLinearGradient gradient(leftPadding, 0, w - rightPadding, 0);

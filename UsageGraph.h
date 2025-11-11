@@ -1,10 +1,10 @@
 #ifndef USAGEGRAPH_H
 #define USAGEGRAPH_H
 
-#include <QWidget>
-#include <QVector>
-#include <QString>
 #include <QColor>
+#include <QString>
+#include <QVector>
+#include <QWidget>
 
 class UsageGraph : public QWidget
 {
@@ -21,9 +21,15 @@ public:
                         QWidget *parent = nullptr);
 
     explicit UsageGraph(bool displayLabels = true, QWidget *parent = nullptr);
-    explicit UsageGraph(QString title, double minValue, double maxValue, QString unit, QWidget *parent = nullptr);
-    explicit UsageGraph(QString title, double minValue, double maxValue,
-                        QString minValueLabel, QString maxValueLabel, QString unit, QWidget *parent = nullptr);
+    explicit UsageGraph(
+        QString title, double minValue, double maxValue, QString unit, QWidget *parent = nullptr);
+    explicit UsageGraph(QString title,
+                        double minValue,
+                        double maxValue,
+                        QString minValueLabel,
+                        QString maxValueLabel,
+                        QString unit,
+                        QWidget *parent = nullptr);
 
     void setTitle(const QString &title);
     void setRange(double minValue, double maxValue);
@@ -45,8 +51,8 @@ private:
     int m_maxPoints;
     bool m_displayLabels;
     QVector<double> m_history;
+    QVector<double> m_rawHistory;
     QColor m_accentColor;
 };
 
 #endif // USAGEGRAPH_H
-

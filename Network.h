@@ -16,7 +16,7 @@ public:
     void getIfaceData(QString interface);
 
 signals:
-    void updatedThroughput(quint64 receivedBytes, QString receivedSpeed, quint64 sentBytes, QString sentSpeed);
+    void updatedThroughput(quint64 receivedBits, QString receivedSpeed, quint64 sentBits, QString sentSpeed);
     void updateIfaceData(QString name, QString type, QString ipv6, QString ipv4);
 
 private slots:
