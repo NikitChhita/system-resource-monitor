@@ -47,6 +47,7 @@ private:
 
     double totalDiskSpace;
     double availDiskSpace;
+    double usedDiskSpace;
 
     bool firstRun;
 

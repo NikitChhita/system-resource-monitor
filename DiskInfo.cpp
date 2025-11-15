@@ -18,6 +18,7 @@ DiskInfo::DiskInfo(QObject *parent)
     , prevTime(0)
     , totalDiskSpace(0.0)
     , availDiskSpace(0.0)
+    , usedDiskSpace(0.0)
     , firstRun(true)
 
 {
@@ -37,7 +38,11 @@ void DiskInfo::getDiskSpaceInfo()
     {
         totalDiskSpace = (buf.f_blocks * buf.f_bsize) / (1024.0 * 1024.0 * 1024.0);
         availDiskSpace = (buf.f_bavail * buf.f_bsize) / (1024.0 * 1024.0 * 1024.0);
-
+        usedDiskSpace = totalDiskSpace - availDiskSpace;
+    }
+    else
+    {
+        qWarning() << "Failed to get disk space information";
     }
 
 
@@ -63,14 +68,17 @@ void DiskInfo::updateDiskInfo()
     for (int i = 0; i < lines.size() - 1; i++) {
         QString line = lines[i];
         QStringList values = line.split(whitespaceRegex, Qt::SkipEmptyParts);
-        QChar lastChar = values[2].at(values[2].length()-1);
-        //last line was if(values[2] == "vda")
-        if (!(lastChar.isDigit())) {
-            readIOPS = values[3].toLong();
-            writeIOPS = values[7].toLong();
-            currentSectorsRead = values[5].toLong();
-            currentSectorsWritten = values[9].toLong();
-            break;
+        if (values.size() >= 14 && !values[2].isEmpty())
+        {
+            QChar lastChar = values[2].at(values[2].length()-1);
+            //last line was if(values[2] == "vda")
+            if (!(lastChar.isDigit())) {
+                readIOPS = values[3].toLong();
+                writeIOPS = values[7].toLong();
+                currentSectorsRead = values[5].toLong();
+                currentSectorsWritten = values[9].toLong();
+                break;
+            }
         }
     }
 
@@ -116,11 +124,13 @@ QString DiskInfo::getDiskInfoString()
     return QString("Reads Completed: %0 Writes Completed: %1\n"
                    "Read Throughput: %2 MB/s Write Throughput: %3 MB/s \n"
                    "Available Disk Space: %4 GB\n"
-                   "Total Disk Space: %5 GB")
+                   "Total Disk Space Used: %5 GB / %6GB")
         .arg(readIOPS)
         .arg(writeIOPS)
         .arg(readMBps, 0, 'f', 2)
         .arg(writeMBps, 0, 'f', 2)
         .arg(availDiskSpace, 0, 'f', 2)
+        .arg(usedDiskSpace, 0, 'f', 2)
         .arg(totalDiskSpace,0, 'f', 2 );
+
 }

@@ -14,8 +14,8 @@ public:
     explicit RamUsage(QObject *parent = nullptr);
     ~RamUsage() = default;
 
-    long getCurrentRamUsage() const {return totalUsedRam;}
     QString getRamUsageString() const;
+    long getCurrentRamUsage() const {return totalUsedRam;}
     long getTotalSysRam() const {return totalSysRam;}
 
 
@@ -29,12 +29,12 @@ private:
     QTimer *m_Timer;
 
     long totalUsedRam; //  = totalSysRam - freeRam - buffers - cachedRam
-    long freeRAM;
+    //long freeRAM;
     long totalSysRam;
     long buffers;
     long cachedRam;
+    long availableRam;
     bool m_firstRun;
-
 
 
 };

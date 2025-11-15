@@ -9,9 +9,10 @@ RamUsage::RamUsage(QObject *parent)
     :QObject(parent)
     , totalUsedRam(0)
     , totalSysRam(0)
-    , freeRAM(0)
+    //, freeRAM(0)
     , buffers(0)
     , cachedRam(0)
+    , availableRam(0)
 {
     m_Timer = new QTimer(this);
     connect(m_Timer, &QTimer::timeout, this, &RamUsage::updateRamUsage);
@@ -26,7 +27,7 @@ void RamUsage::updateRamUsage()
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "Cannot open /proc/meminfo";
-        return;
+        return ;
     }
 
     QString allContent = file.readAll();
@@ -42,30 +43,47 @@ void RamUsage::updateRamUsage()
 
         if(values.size() < 2) continue;
 
+        bool ok;
+        long value = values[1].toLong(&ok);
+
+        if(!ok)
+        {
+            qDebug() << "Error parsing: " << values[0];
+        }
+
         if (values[0] == "MemTotal:")
         {
-            totalSysRam = values[1].toLong();
+            totalSysRam = value;
 
         }
-        else if (values[0] == "MemFree:")
+        //else if (values[0] == "MemFree:")
+        //{
+        //    freeRAM = value;
+        //}
+        else if(values[0] == "MemAvailable:")
         {
-            freeRAM = values[1].toLong();
+            availableRam = value;
         }
         else if (values[0] == "Buffers:")
         {
-            buffers = values[1].toLong();
+            buffers = value;
         }
         else if(values[0] == "Cached:")
         {
-            cachedRam = values[1].toLong();
-            break;
+            cachedRam = value;
+
         }
     }
 
-
-    totalUsedRam = totalSysRam - freeRAM - buffers - cachedRam;
-
-    emit ramUsageUpdated(totalUsedRam);
+    if (totalSysRam > 0)
+    {
+        totalUsedRam = totalSysRam - availableRam;
+        emit ramUsageUpdated(totalUsedRam);
+    }
+    else
+    {
+        qDebug() << "Error: Invalid totalSysRam value";
+    }
 
 }
 
@@ -73,9 +91,11 @@ QString RamUsage::getRamUsageString() const
 {
     double usedGB = totalUsedRam / (1024.0 * 1024.0);
     double totalGB = totalSysRam / (1024.0 * 1024.0);
-    double usedPercentage = (usedGB * 100) / totalGB;
-    double availableGB = (totalGB - usedGB);
+    double usedPercentage = (totalGB > 0.0) ? (usedGB * 100.0) / totalGB : 0.0;
+    double availableGB = (availableRam) / (1024.0 * 1024.0);
     double cachedGB = cachedRam / (1024.0 * 1024.0);
+
+
     return QString("Memory Used: %1 GB/ %2 GB (%3%)\n"
                    "Total Memory: %4 GB Available Memory: %5 GB\n"
                    "Cached Memory: %6 GB")
