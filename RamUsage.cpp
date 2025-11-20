@@ -13,6 +13,8 @@ RamUsage::RamUsage(QObject *parent)
     , buffers(0)
     , cachedRam(0)
     , availableRam(0)
+    , pagedPool(0)
+    , nonPagedPool(0)
 {
     m_Timer = new QTimer(this);
     connect(m_Timer, &QTimer::timeout, this, &RamUsage::updateRamUsage);
@@ -36,7 +38,7 @@ void RamUsage::updateRamUsage()
     QStringList lines = allContent.split('\n', Qt::SkipEmptyParts);
     QRegularExpression whitespaceRegex("\\s+");
 
-    for(int i = 0; i < lines.size() && i < 10; i++)
+    for(int i = 0; i < lines.size(); i++)
     {
         QString line = lines[i];
         QStringList values = line.split(whitespaceRegex, Qt::SkipEmptyParts);
@@ -73,6 +75,14 @@ void RamUsage::updateRamUsage()
             cachedRam = value;
 
         }
+        else if(values[0] == "SReclaimable:")
+        {
+            pagedPool = value;
+        }
+        else if(values[0] == "SUnreclaim:")
+        {
+            nonPagedPool = value;
+        }
     }
 
     if (totalSysRam > 0)
@@ -94,14 +104,18 @@ QString RamUsage::getRamUsageString() const
     double usedPercentage = (totalGB > 0.0) ? (usedGB * 100.0) / totalGB : 0.0;
     double availableGB = (availableRam) / (1024.0 * 1024.0);
     double cachedGB = cachedRam / (1024.0 * 1024.0);
+    double pagedGB = pagedPool / (1024.0  * 1024.0);
+    double nonPagedGB = nonPagedPool / (1024.0  * 1024.0);
 
 
     return QString("Memory Used: %1 GB/ %2 GB (%3%)\n"
                    "Total Memory: %4 GB Available Memory: %5 GB\n"
-                   "Cached Memory: %6 GB")
+                   "Cached Memory: %6 GB\n"
+                   "Paged Pool: %7 GB Non-Paged Pool: %8 GB")
         .arg(usedGB, 0, 'f', 2).arg(totalGB, 0,  'f', 2)
         .arg(usedPercentage, 0, 'f', 2).arg(totalGB, 0, 'f', 2)
-        .arg(availableGB, 0, 'f', 2).arg(cachedGB, 0, 'f', 2);
+        .arg(availableGB, 0, 'f', 2).arg(cachedGB, 0, 'f', 2)
+        .arg(pagedGB, 0, 'f', 2).arg(nonPagedGB, 0, 'f', 2);
 
 }
 

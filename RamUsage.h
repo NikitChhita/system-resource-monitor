@@ -34,6 +34,8 @@ private:
     long buffers;
     long cachedRam;
     long availableRam;
+    long pagedPool;
+    long nonPagedPool;
     bool m_firstRun;
 
 
