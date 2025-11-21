@@ -274,14 +274,14 @@ public:
         QHBoxLayout *graphLayout = new QHBoxLayout();
         graphLayout->setSpacing(20); // Add some spacing between graphs
 
-        readGraph = new UsageGraph("Read Throughput", 0.0, 100.00, "MB/s", this);
+        readGraph = new UsageGraph("Read Throughput", 0.0, 3000.00, "MB/s", this);
         readGraph->setMinimumHeight(350);
         layout->addWidget(readGraph);
         readGraph->setMaximumWidth(400); // Prevent horizontal stretching
         graphLayout->addWidget(readGraph);
         layout->addLayout(graphLayout);
 
-        writeGraph = new UsageGraph("Write Throughput", 0.0, 100.00, "MB/s", this);
+        writeGraph = new UsageGraph("Write Throughput", 0.0, 3000.00, "MB/s", this);
         writeGraph->setMinimumHeight(350);
         layout->addWidget(writeGraph);
         writeGraph->setMaximumWidth(400); // Prevent horizontal stretching
@@ -311,7 +311,6 @@ private slots:
     void updateDiskInfo()
     {
         diskUsageLabel->setText(diskMonitor->getDiskInfoString());
-
     }
 
     void updateReadThroughputGraph(double readBytesPerSec)
@@ -372,12 +371,12 @@ public:
 private slots:
     void updateProcesses(std::vector<ProcessUsage> processes)
     {
-        qDebug() << "updateProcesses called with" << processes.size();
+        //qDebug() << "updateProcesses called with" << processes.size();
         processTable->setRowCount(processes.size());
         for(size_t i = 0; i < processes.size(); ++i)
         {
             const ProcessUsage &proc = processes[i];
-            qDebug() << "Process" << i << ":" << proc.PID << proc.name;
+            //qDebug() << "Process" << i << ":" << proc.PID << proc.name;
 
             processTable->setItem(i, 0, new QTableWidgetItem(QString::number(proc.PID)));
             processTable->setItem(i, 1, new QTableWidgetItem(proc.name));

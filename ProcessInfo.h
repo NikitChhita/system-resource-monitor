@@ -29,12 +29,7 @@ public:
     double getRAMUsage(int pid);
     std::pair<long, long> getDiskInfo(int pid);
 
-
-
 signals:
-    //void cpuUsageUpdated(double cpuUsage);
-    //void ramUsageUpdated(double ramUsage);
-    //void diskInfoUpdated(long bytesRead, long bytesWritten);
     void processesUpdated(std::vector<ProcessUsage> processes);
 
 private slots:
@@ -49,13 +44,11 @@ private:
         double uptime;
 
     };
+
     QMap <int, ProcessCPUData> previousCPUData;
     std::vector <QDir> getProcesses();
     bool containsLetters(const QString &word);
-    //double cpuUsage;
-    //double ramUsage;
-    //long bytesRead;
-    //long bytesWritten;
+    void cleanupDeadProcesses(const std::vector<int>& currentPIDs);
 
 
 };

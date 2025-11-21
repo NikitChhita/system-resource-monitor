@@ -122,6 +122,11 @@ double ProcessInfo::getCPUUsage(int pid)
     QStringList cpuValues = in1.readLine().split(whitespaceRegex, Qt::SkipEmptyParts);
     statFile.close();
 
+    if (cpuValues.size() < 22)
+    {
+        return 0.0;
+    }
+
     double utime = cpuValues[13].toLong() / SYSTEM_CLOCK_TICKS;
     double stime = cpuValues[14].toLong() / SYSTEM_CLOCK_TICKS;
 
@@ -186,8 +191,8 @@ double ProcessInfo::getRAMUsage(int pid)
 
 std::pair<long,long> ProcessInfo::getDiskInfo(int pid)
 {
-    long bytesRead;
-    long bytesWritten;
+    long bytesRead = 0;
+    long bytesWritten = 0;
 
     QString ioPath = QString(("/proc/%1/io")).arg(pid);
     QFile ioFile(ioPath);
@@ -228,35 +233,67 @@ std::pair<long,long> ProcessInfo::getDiskInfo(int pid)
 
 // for now iterate through the vector, collect pid, assign it to struct val, everything else
 // to 0, work to display on screen. If working, rinse and repeat
+void ProcessInfo::cleanupDeadProcesses(const std::vector<int>& currentPIDs)
+{
+    QSet<int> current(currentPIDs.begin(), currentPIDs.end());
 
+    qDebug() << "Cleanup called with" << currentPIDs.size() << "current PIDs";
+    qDebug() << "previousCPUData has" << previousCPUData.size() << "entries";
+
+    auto it = previousCPUData.begin();
+    int removed = 0;
+
+    while(it != previousCPUData.end())
+    {
+        if(!current.contains(it.key()))
+        {
+            qDebug() << "Removing dead PID:" << it.key();
+            it = previousCPUData.erase(it);
+            removed++;
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    qDebug() << "Removed" << removed << "dead processes";
+    qDebug() << "previousCPUData now has" << previousCPUData.size() << "entries";
+}
 
 void ProcessInfo::updateProcessInfo()
 {
     std::vector<ProcessUsage> processes;
     std::vector<QDir> processDirs = getProcesses();
+    std::vector<int> currentPIDs;
 
-    qDebug() << "Found" << processDirs.size() << "process directories";
+    //qDebug() << "Found" << processDirs.size() << "process directories";
     for(const QDir &dir : processDirs)
     {
         QString dirName = dir.dirName();
-        //bool ok;
-        int pid = dirName.toInt();
+        bool ok;
+        int pid = dirName.toInt(&ok);
 
-        //if(ok)
-        //{
-        ProcessUsage proc;
-        proc.PID = pid;
-        proc.name = getProcessName(pid);
-        proc.cpuUsage = getCPUUsage(pid);
-        proc.ramUsage = getRAMUsage(pid);
-        std::pair<long, long> diskInfo = getDiskInfo(pid);
-        proc.bytesRead = diskInfo.first;
-        proc.bytesWritten = diskInfo.second;
-        processes.push_back(proc);
-        //}
+        if(ok)
+        {
+            currentPIDs.push_back(pid);
+
+            ProcessUsage proc;
+            proc.PID = pid;
+            proc.name = getProcessName(pid);
+            proc.cpuUsage = getCPUUsage(pid);
+            proc.ramUsage = getRAMUsage(pid);
+            std::pair<long, long> diskInfo = getDiskInfo(pid);
+            proc.bytesRead = diskInfo.first;
+            proc.bytesWritten = diskInfo.second;
+            processes.push_back(proc);
+        }
     }
 
-    qDebug() << "Emitting" << processes.size() << "processes";
+    //qDebug() << "Emitting" << processes.size() << "processes";
+
+    qDebug() << "Calling cleanup with" << currentPIDs.size() << "PIDs";
+    cleanupDeadProcesses(currentPIDs);
     emit processesUpdated(processes);
 }
 
