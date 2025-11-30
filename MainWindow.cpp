@@ -295,7 +295,7 @@ public:
         layout->addWidget(diskUsageLabel);
 
 
-        //connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
+        connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
         connect(diskMonitor, &DiskInfo::updateWrites, this, &DiskWidget::updateDiskInfo);
         connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget::updateReadThroughputGraph);
         connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateWriteThroughputGraph);
@@ -316,6 +316,7 @@ private slots:
     void updateReadThroughputGraph(double readBytesPerSec)
     {
         double readMBps = readBytesPerSec / (1024.0 * 1024.0);
+        qDebug() << "Read throughput:" << readMBps << "MB/s";
         readGraph->addUtilizationValue(readMBps);
     }
 
@@ -350,6 +351,9 @@ public:
             "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
         layout->addWidget(title);
 
+        // container for process table
+        QHBoxLayout *processTableLayout = new QHBoxLayout();
+
         //table for all processes
         processTable = new QTableWidget(this);
         processTable->setColumnCount(5);
@@ -361,7 +365,14 @@ public:
             "QHeaderView::section { background-color: #3d3d3d; color: white; padding: 5px; }"
         );
 
+        processTable->setMinimumWidth(800);
+        processTable->setMaximumHeight(500);
+        //processTable->setMaximumWidth(800);
+
         layout->addWidget(processTable);
+        layout->addLayout(processTableLayout);
+        processTableLayout->addWidget(processTable);
+
         processMonitor = new ProcessInfo(this);
         connect(processMonitor, &ProcessInfo::processesUpdated, this, &ProcessWidget::updateProcesses);
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
@@ -371,13 +382,10 @@ public:
 private slots:
     void updateProcesses(std::vector<ProcessUsage> processes)
     {
-        //qDebug() << "updateProcesses called with" << processes.size();
         processTable->setRowCount(processes.size());
         for(size_t i = 0; i < processes.size(); ++i)
         {
             const ProcessUsage &proc = processes[i];
-            //qDebug() << "Process" << i << ":" << proc.PID << proc.name;
-
             processTable->setItem(i, 0, new QTableWidgetItem(QString::number(proc.PID)));
             processTable->setItem(i, 1, new QTableWidgetItem(proc.name));
             processTable->setItem(i, 2, new QTableWidgetItem(QString::number(proc.cpuUsage, 'f', 2 )));

@@ -237,9 +237,6 @@ void ProcessInfo::cleanupDeadProcesses(const std::vector<int>& currentPIDs)
 {
     QSet<int> current(currentPIDs.begin(), currentPIDs.end());
 
-    qDebug() << "Cleanup called with" << currentPIDs.size() << "current PIDs";
-    qDebug() << "previousCPUData has" << previousCPUData.size() << "entries";
-
     auto it = previousCPUData.begin();
     int removed = 0;
 
@@ -247,7 +244,6 @@ void ProcessInfo::cleanupDeadProcesses(const std::vector<int>& currentPIDs)
     {
         if(!current.contains(it.key()))
         {
-            qDebug() << "Removing dead PID:" << it.key();
             it = previousCPUData.erase(it);
             removed++;
         }
@@ -257,8 +253,6 @@ void ProcessInfo::cleanupDeadProcesses(const std::vector<int>& currentPIDs)
         }
     }
 
-    qDebug() << "Removed" << removed << "dead processes";
-    qDebug() << "previousCPUData now has" << previousCPUData.size() << "entries";
 }
 
 void ProcessInfo::updateProcessInfo()
@@ -267,7 +261,6 @@ void ProcessInfo::updateProcessInfo()
     std::vector<QDir> processDirs = getProcesses();
     std::vector<int> currentPIDs;
 
-    //qDebug() << "Found" << processDirs.size() << "process directories";
     for(const QDir &dir : processDirs)
     {
         QString dirName = dir.dirName();
@@ -290,9 +283,6 @@ void ProcessInfo::updateProcessInfo()
         }
     }
 
-    //qDebug() << "Emitting" << processes.size() << "processes";
-
-    qDebug() << "Calling cleanup with" << currentPIDs.size() << "PIDs";
     cleanupDeadProcesses(currentPIDs);
     emit processesUpdated(processes);
 }
