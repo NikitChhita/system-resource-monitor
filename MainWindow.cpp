@@ -25,44 +25,90 @@ public:
     {
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
+        layout->setSpacing(20);
 
-        // Title
-        QLabel *title = new QLabel("CPU Performance");
-        title->setAlignment(Qt::AlignCenter);
-        title->setStyleSheet(
-            "QLabel { color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px; }");
-        layout->addWidget(title);
+        // Header
+        QHBoxLayout *headerLayout = new QHBoxLayout();
+        QLabel *title = new QLabel("CPU");
+        title->setStyleSheet("font-size: 24px; font-weight: bold; color: white;");
+        cpuModelLabel = new QLabel("...");
+        cpuModelLabel->setStyleSheet("font-size: 14px; color: rgba(255, 255, 255, 0.7);");
+        cpuModelLabel->setAlignment(Qt::AlignRight | Qt::AlignBottom);
+        headerLayout->addWidget(title);
+        headerLayout->addWidget(cpuModelLabel, 1);
+        layout->addLayout(headerLayout);
 
-        // Create Usage Graph
+        // Graph at the top
         cpuGraph = new UsageGraph("CPU Usage", 0.0, 100.0, "%", this);
-        cpuGraph->setMinimumHeight(350);
+        cpuGraph->setMinimumHeight(300);
         layout->addWidget(cpuGraph);
-        cpuGraph->setMaximumWidth(800); // Prevent horizontal stretching
 
-        // CPU usage display
-        cpuUsageLabel = new QLabel("Overall CPU Usage: 0.0%");
-        cpuUsageLabel->setAlignment(Qt::AlignCenter);
-        cpuUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
-        layout->addWidget(cpuUsageLabel);
+        // Data grid below
+        QGridLayout *dataGrid = new QGridLayout();
+        dataGrid->setHorizontalSpacing(40);
+        dataGrid->setVerticalSpacing(15);
 
-        // Create and connect CPU monitor
+        // Left column
+        addDataRow(dataGrid, 0, "Utilization:", &utilLabel);
+        addDataRow(dataGrid, 1, "Processes:", &processesLabel);
+        addDataRow(dataGrid, 2, "Threads:", &threadsLabel);
+        addDataRow(dataGrid, 3, "Up time:", &uptimeLabel);
+
+        // Right column
+        addDataRow(dataGrid, 0, "Sockets:", &socketsLabel, 2);
+        addDataRow(dataGrid, 1, "Cores:", &coresLabel, 2);
+
+        layout->addLayout(dataGrid);
+        layout->addStretch();
+
+        // Connect to monitor
         cpuMonitor = new CpuMonitorUsage(this);
         connect(cpuMonitor, &CpuMonitorUsage::usageUpdated, this, &CpuWidget::updateUsage);
+        connect(cpuMonitor, &CpuMonitorUsage::cpuInfoUpdated, this, &CpuWidget::updateCpuInfo);
 
-        layout->addStretch(); // Push content to top
+        const QVector<double> history = cpuMonitor->getUtilizationHistory();
+        for (double value : history) {
+            cpuGraph->addUtilizationValue(value);
+        }
+
         setStyleSheet("QWidget { background-color: #1e1e1e; }");
+    }
+
+private:
+    void addDataRow(QGridLayout *grid, int row, const QString &label, QLabel **valueLabel, int colOffset = 0)
+    {
+        QLabel *lbl = new QLabel(label);
+        lbl->setStyleSheet("color: rgba(255, 255, 255, 0.7); font-size: 14px;");
+
+        QLabel *val = new QLabel("...");
+        val->setStyleSheet("color: white; font-size: 14px; font-weight: 500;");
+        *valueLabel = val;
+
+        grid->addWidget(lbl, row, 0 + colOffset);
+        grid->addWidget(val, row, 1 + colOffset);
     }
 
 private slots:
     void updateUsage(double usage)
     {
-        cpuUsageLabel->setText(
-            QString("Overall CPU Usage: %1%").arg(QString::number(usage, 'f', 1)));
-        cpuGraph->addUtilizationValue(usage); // giving the graph the cpu data
+        utilLabel->setText(QString::number(usage, 'f', 1) + "%");
+        cpuGraph->addUtilizationValue(usage);
+    }
+
+    void updateCpuInfo(const CpuInfo &info)
+    {
+        cpuModelLabel->setText(info.modelName);
+        processesLabel->setText(QString::number(info.processes));
+        threadsLabel->setText(QString::number(info.threads));
+        uptimeLabel->setText(info.uptime);
+        socketsLabel->setText(QString::number(info.sockets));
+        coresLabel->setText(QString::number(info.coresPerSocket));
     }
 
 private:
-    QLabel *cpuUsageLabel;
+    QLabel *cpuModelLabel;
+    QLabel *utilLabel, *processesLabel, *threadsLabel, *uptimeLabel;
+    QLabel *socketsLabel, *coresLabel;
     CpuMonitorUsage *cpuMonitor;
     UsageGraph *cpuGraph;
 };
