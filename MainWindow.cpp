@@ -351,9 +351,6 @@ public:
             "QLabel{ color: white; font-size: 18px; font-weight: 500; margin-bottom: 20px;}");
         layout->addWidget(title);
 
-        // container for process table
-        QHBoxLayout *processTableLayout = new QHBoxLayout();
-
         //table for all processes
         processTable = new QTableWidget(this);
         processTable->setColumnCount(5);
@@ -365,16 +362,12 @@ public:
             "QHeaderView::section { background-color: #3d3d3d; color: white; padding: 5px; }"
         );
 
-        processTable->setMinimumWidth(800);
-        processTable->setMaximumHeight(500);
-        //processTable->setMaximumWidth(800);
-
+        processTable->setMaximumWidth(820);
         layout->addWidget(processTable);
-        layout->addLayout(processTableLayout);
-        processTableLayout->addWidget(processTable);
 
         processMonitor = new ProcessInfo(this);
         connect(processMonitor, &ProcessInfo::processesUpdated, this, &ProcessWidget::updateProcesses);
+
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
 
 
