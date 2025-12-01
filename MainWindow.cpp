@@ -1,20 +1,20 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QLabel>
 #include <QListWidget>
 #include <QPalette>
 #include <QStackedWidget>
+#include <QTableWidget>
 #include <QVBoxLayout>
 #include "CpuMonitorUsage.h"
 #include "DiskInfo.h"
-#include "ProcessInfo.h"
-#include <QTableWidget>
-#include<QHeaderView>
 #include "Network.h"
+#include "ProcessInfo.h"
 #include "RamUsage.h"
 #include "UsageGraph.h"
-
+#include "PageCustomization.h"
 
 // CPU widget with actual monitoring
 class CpuWidget : public QWidget
@@ -61,6 +61,42 @@ public:
         layout->addLayout(dataGrid);
         layout->addStretch();
 
+        // Change background color button
+        backgroundColor_btn = new QPushButton("Change Background Color");
+        backgroundColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(backgroundColor_btn);
+
+        // Change text color button
+        textColor_btn = new QPushButton("Change Content Color");
+        textColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(textColor_btn);
+
+        // Apply page styling to all pages button
+        applyAllPages_btn = new QPushButton("Apply Styling To All Pages");
+        applyAllPages_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(applyAllPages_btn);
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(backgroundColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setBackgroundColorDialog(this);
+        });
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(textColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setTextColorDialog(this);
+        });
+
+        connect(applyAllPages_btn, &QPushButton::clicked, this, [this]() {
+            QStackedWidget* stack = qobject_cast<QStackedWidget*>(parentWidget());
+            if (stack) {
+                QList<QWidget*> pages;
+                for (int i = 0; i < stack->count(); ++i) {
+                    pages.append(stack->widget(i));
+                }
+                ColorUtils::setAllStyles(this, pages);
+            }
+        });
+
         // Connect to monitor
         cpuMonitor = new CpuMonitorUsage(this);
         connect(cpuMonitor, &CpuMonitorUsage::usageUpdated, this, &CpuWidget::updateUsage);
@@ -75,7 +111,8 @@ public:
     }
 
 private:
-    void addDataRow(QGridLayout *grid, int row, const QString &label, QLabel **valueLabel, int colOffset = 0)
+    void addDataRow(
+        QGridLayout *grid, int row, const QString &label, QLabel **valueLabel, int colOffset = 0)
     {
         QLabel *lbl = new QLabel(label);
         lbl->setStyleSheet("color: rgba(255, 255, 255, 0.7); font-size: 14px;");
@@ -111,6 +148,9 @@ private:
     QLabel *socketsLabel, *coresLabel;
     CpuMonitorUsage *cpuMonitor;
     UsageGraph *cpuGraph;
+    QPushButton *backgroundColor_btn;
+    QPushButton *textColor_btn;
+    QPushButton *applyAllPages_btn;
 };
 
 // Network widget
@@ -184,6 +224,42 @@ public:
         bytesSentLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
         layout->addWidget(bytesSentLabel);
 
+        // Change background color button
+        backgroundColor_btn = new QPushButton("Change Background Color");
+        backgroundColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(backgroundColor_btn);
+
+        // Change text color button
+        textColor_btn = new QPushButton("Change Content Color");
+        textColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(textColor_btn);
+
+        // Apply page styling to all pages button
+        applyAllPages_btn = new QPushButton("Apply Styling To All Pages");
+        applyAllPages_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(applyAllPages_btn);
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(backgroundColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setBackgroundColorDialog(this);
+        });
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(textColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setTextColorDialog(this);
+        });
+
+        connect(applyAllPages_btn, &QPushButton::clicked, this, [this]() {
+            QStackedWidget* stack = qobject_cast<QStackedWidget*>(parentWidget());
+            if (stack) {
+                QList<QWidget*> pages;
+                for (int i = 0; i < stack->count(); ++i) {
+                    pages.append(stack->widget(i));
+                }
+                ColorUtils::setAllStyles(this, pages);
+            }
+        });
+
         // Create and connect network monitor
         interfaceMonitor = new networkStats(this);
         connect(interfaceMonitor, &networkStats::updateIfaceData, this, &NetWidget::updateNetSpecs);
@@ -203,31 +279,30 @@ private slots:
 
     void updateNetData(quint64 recBits, QString recSpeed, quint64 senBits, QString senSpeed)
     {
-        bytesReceivedLabel->setText(QString("Received:  %1 %2ps").arg(QString::number(recBits, 'f', 2), recSpeed));
-        bytesSentLabel->setText(QString("Sent:  %1 %2ps").arg(QString::number(senBits, 'f', 2), senSpeed));
+        bytesReceivedLabel->setText(
+            QString("Received:  %1 %2ps").arg(QString::number(recBits, 'f', 2), recSpeed));
+        bytesSentLabel->setText(
+            QString("Sent:  %1 %2ps").arg(QString::number(senBits, 'f', 2), senSpeed));
 
-
-        if(recSpeed == "Kb"){
-            recvGraph->setRange(0,1000);
-        } else if(recSpeed == "Mb"){
-            recvGraph->setRange(0,1000000);
+        if (recSpeed == "Kb") {
+            recvGraph->setRange(0, 1000);
+        } else if (recSpeed == "Mb") {
+            recvGraph->setRange(0, 1000000);
             recBits = recBits * 1000;
-        } else if(recSpeed == "Gb"){
-            recvGraph->setRange(0,1000000 * 1000);
+        } else if (recSpeed == "Gb") {
+            recvGraph->setRange(0, 1000000 * 1000);
             recBits = recBits * 1000000;
         };
 
-
-        if(senSpeed == "Kb"){
-            sentGraph->setRange(0,1000);
-        } else if(senSpeed == "Mb"){
-            sentGraph->setRange(0,1000000);
-        } else if(senSpeed == "Gb"){
+        if (senSpeed == "Kb") {
+            sentGraph->setRange(0, 1000);
+        } else if (senSpeed == "Mb") {
+            sentGraph->setRange(0, 1000000);
+        } else if (senSpeed == "Gb") {
             senBits = senBits * 1000;
-            sentGraph->setRange(0,1000000 * 1000);
+            sentGraph->setRange(0, 1000000 * 1000);
             senBits = senBits * 1000000;
         };
-
 
         recvGraph->setUnit(QString(" %1ps").arg(recSpeed));
         recvGraph->addUtilizationValue(recBits); // gives received graph its data
@@ -247,6 +322,9 @@ private:
     networkStats *interfaceMonitor;
     UsageGraph *recvGraph;
     UsageGraph *sentGraph;
+    QPushButton *backgroundColor_btn;
+    QPushButton *textColor_btn;
+    QPushButton *applyAllPages_btn;
 };
 
 class RamWidget : public QWidget
@@ -255,7 +333,6 @@ public:
     RamWidget(QWidget *parent = nullptr)
         : QWidget(parent)
     {
-
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
 
@@ -279,24 +356,63 @@ public:
         ramUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
         layout->addWidget(ramUsageLabel);
 
+        // Change background color button
+        backgroundColor_btn = new QPushButton("Change Background Color");
+        backgroundColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(backgroundColor_btn);
+
+        // Change text color button
+        textColor_btn = new QPushButton("Change Content Color");
+        textColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(textColor_btn);
+
+        // Apply page styling to all pages button
+        applyAllPages_btn = new QPushButton("Apply Styling To All Pages");
+        applyAllPages_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(applyAllPages_btn);
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(backgroundColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setBackgroundColorDialog(this);
+        });
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(textColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setTextColorDialog(this);
+        });
+
+        connect(applyAllPages_btn, &QPushButton::clicked, this, [this]() {
+            QStackedWidget* stack = qobject_cast<QStackedWidget*>(parentWidget());
+            if (stack) {
+                QList<QWidget*> pages;
+                for (int i = 0; i < stack->count(); ++i) {
+                    pages.append(stack->widget(i));
+                }
+                ColorUtils::setAllStyles(this, pages);
+            }
+        });
+
+        // Connects monitor to update ram usage functions
         connect(ramMonitor, &RamUsage::ramUsageUpdated, this, &RamWidget::updateUsage);
 
         layout->addStretch();
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
     }
 private slots:
-    void updateUsage(long usedRamKB) {
+    void updateUsage(long usedRamKB)
+    {
         double usedRamGB = usedRamKB / (1024.0 * 1024.0);
         ramUsageLabel->setText(ramMonitor->getRamUsageString());
         ramGraph->addUtilizationValue(usedRamGB);
     }
 
-
-
 private:
     QLabel *ramUsageLabel;
     RamUsage *ramMonitor;
     UsageGraph *ramGraph;
+    QPushButton *backgroundColor_btn;
+    QPushButton *textColor_btn;
+    QPushButton *applyAllPages_btn;
 };
 
 class DiskWidget : public QWidget
@@ -340,24 +456,58 @@ public:
         diskUsageLabel->setStyleSheet("QLabel { color: white; font-size: 18px; }");
         layout->addWidget(diskUsageLabel);
 
+        // Change background color button
+        backgroundColor_btn = new QPushButton("Change Background Color");
+        backgroundColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(backgroundColor_btn);
+
+        // Change text color button
+        textColor_btn = new QPushButton("Change Content Color");
+        textColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(textColor_btn);
+
+        // Apply page styling to all pages button
+        applyAllPages_btn = new QPushButton("Apply Styling To All Pages");
+        applyAllPages_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(applyAllPages_btn);
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(backgroundColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setBackgroundColorDialog(this);
+        });
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(textColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setTextColorDialog(this);
+        });
+
+        connect(applyAllPages_btn, &QPushButton::clicked, this, [this]() {
+            QStackedWidget* stack = qobject_cast<QStackedWidget*>(parentWidget());
+            if (stack) {
+                QList<QWidget*> pages;
+                for (int i = 0; i < stack->count(); ++i) {
+                    pages.append(stack->widget(i));
+                }
+                ColorUtils::setAllStyles(this, pages);
+            }
+        });
 
         connect(diskMonitor, &DiskInfo::updateReads, this, &DiskWidget::updateDiskInfo);
         connect(diskMonitor, &DiskInfo::updateWrites, this, &DiskWidget::updateDiskInfo);
-        connect(diskMonitor, &DiskInfo::updateReadThroughput, this, &DiskWidget::updateReadThroughputGraph);
-        connect(diskMonitor, &DiskInfo::updateWriteThroughput, this, &DiskWidget::updateWriteThroughputGraph);
+        connect(diskMonitor,
+                &DiskInfo::updateReadThroughput,
+                this,
+                &DiskWidget::updateReadThroughputGraph);
+        connect(diskMonitor,
+                &DiskInfo::updateWriteThroughput,
+                this,
+                &DiskWidget::updateWriteThroughputGraph);
 
         layout->addStretch();
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
-
-
-
-
     }
 private slots:
-    void updateDiskInfo()
-    {
-        diskUsageLabel->setText(diskMonitor->getDiskInfoString());
-    }
+    void updateDiskInfo() { diskUsageLabel->setText(diskMonitor->getDiskInfoString()); }
 
     void updateReadThroughputGraph(double readBytesPerSec)
     {
@@ -370,23 +520,23 @@ private slots:
     {
         double writeMBps = writtenBytesPerSec / (1024.0 * 1024.0);
         writeGraph->addUtilizationValue(writeMBps);
-
     }
-
 
 private:
     QLabel *diskUsageLabel;
     DiskInfo *diskMonitor;
     UsageGraph *readGraph;
     UsageGraph *writeGraph;
+    QPushButton *backgroundColor_btn;
+    QPushButton *textColor_btn;
+    QPushButton *applyAllPages_btn;
 };
 
-
-class ProcessWidget: public QWidget
+class ProcessWidget : public QWidget
 {
 public:
     ProcessWidget(QWidget *parent = nullptr)
-        :QWidget(parent)
+        : QWidget(parent)
     {
         QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
@@ -405,43 +555,85 @@ public:
         processTable->setSelectionBehavior(QAbstractItemView::SelectRows);
         processTable->setStyleSheet(
             "QTableWidget { background-color: #2d2d2d; color: white; }"
-            "QHeaderView::section { background-color: #3d3d3d; color: white; padding: 5px; }"
-        );
+            "QHeaderView::section { background-color: #3d3d3d; color: white; padding: 5px; }");
 
         processTable->setMaximumWidth(820);
         layout->addWidget(processTable);
 
+        // Change background color button
+        backgroundColor_btn = new QPushButton("Change Background Color");
+        backgroundColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(backgroundColor_btn);
+
+        // Change text color button
+        textColor_btn = new QPushButton("Change Content Color");
+        textColor_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(textColor_btn);
+
+        // Apply page styling to all pages button
+        applyAllPages_btn = new QPushButton("Apply Styling To All Pages");
+        applyAllPages_btn->setStyleSheet("QPushButton { color: white; font-size: 15px; max-width: 250px; border: 1px solid white; border-radius: 2px}");
+        layout->addWidget(applyAllPages_btn);
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(backgroundColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setBackgroundColorDialog(this);
+        });
+
+        // Connects background color button to color dialog box (color wheel)
+        connect(textColor_btn, &QPushButton::clicked, this, [this]() {
+            ColorUtils::setTextColorDialog(this);
+        });
+
+        connect(applyAllPages_btn, &QPushButton::clicked, this, [this]() {
+            QStackedWidget* stack = qobject_cast<QStackedWidget*>(parentWidget());
+            if (stack) {
+                QList<QWidget*> pages;
+                for (int i = 0; i < stack->count(); ++i) {
+                    pages.append(stack->widget(i));
+                }
+                ColorUtils::setAllStyles(this, pages);
+            }
+        });
+
         processMonitor = new ProcessInfo(this);
-        connect(processMonitor, &ProcessInfo::processesUpdated, this, &ProcessWidget::updateProcesses);
+        connect(processMonitor,
+                &ProcessInfo::processesUpdated,
+                this,
+                &ProcessWidget::updateProcesses);
 
         setStyleSheet("QWidget { background-color: #1e1e1e;}");
-
-
     }
 private slots:
     void updateProcesses(std::vector<ProcessUsage> processes)
     {
         processTable->setRowCount(processes.size());
-        for(size_t i = 0; i < processes.size(); ++i)
-        {
+        for (size_t i = 0; i < processes.size(); ++i) {
             const ProcessUsage &proc = processes[i];
             processTable->setItem(i, 0, new QTableWidgetItem(QString::number(proc.PID)));
             processTable->setItem(i, 1, new QTableWidgetItem(proc.name));
-            processTable->setItem(i, 2, new QTableWidgetItem(QString::number(proc.cpuUsage, 'f', 2 )));
-            processTable->setItem(i, 3, new QTableWidgetItem(QString::number(proc.ramUsage, 'f', 2) + " MB"));
-            processTable->setItem(i, 4, new QTableWidgetItem("Bytes Read: " + QString("%1").arg(proc.bytesRead) +
-                                                             " Bytes Written: " + QString("%1").arg(proc.bytesWritten)));
-
+            processTable->setItem(i,
+                                  2,
+                                  new QTableWidgetItem(QString::number(proc.cpuUsage, 'f', 2)));
+            processTable->setItem(i,
+                                  3,
+                                  new QTableWidgetItem(QString::number(proc.ramUsage, 'f', 2)
+                                                       + " MB"));
+            processTable->setItem(i,
+                                  4,
+                                  new QTableWidgetItem(
+                                      "Bytes Read: " + QString("%1").arg(proc.bytesRead)
+                                      + " Bytes Written: " + QString("%1").arg(proc.bytesWritten)));
         }
     }
 
 private:
     QTableWidget *processTable;
     ProcessInfo *processMonitor;
+    QPushButton *backgroundColor_btn;
+    QPushButton *textColor_btn;
+    QPushButton *applyAllPages_btn;
 };
-
-
-
 
 // placeholder widget for other tab pages
 class PlaceholderWidget : public QWidget

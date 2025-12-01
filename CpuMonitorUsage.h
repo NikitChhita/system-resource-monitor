@@ -8,15 +8,16 @@
 #include <QVector>
 
 // Simplified struct with only working metrics
-struct CpuInfo {
-    double usage;           // Current CPU usage percentage
-    QString modelName;      // CPU model name
+struct CpuInfo
+{
+    double usage;          // Current CPU usage percentage
+    QString modelName;     // CPU model name
     int sockets;           // Number of CPU sockets
     int coresPerSocket;    // Physical cores per socket
     int logicalProcessors; // Total logical processors (threads)
-    int processes;        // Number of running processes
-    int threads;          // Number of running threads
-    QString uptime;       // System uptime formatted
+    int processes;         // Number of running processes
+    int threads;           // Number of running threads
+    QString uptime;        // System uptime formatted
 };
 
 class CpuMonitorUsage : public QObject

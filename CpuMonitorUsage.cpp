@@ -1,9 +1,9 @@
 #include "CpuMonitorUsage.h"
+#include <QDir>
 #include <QFile>
+#include <QProcess>
 #include <QRegularExpression>
 #include <QTextStream>
-#include <QProcess>
-#include <QDir>
 #include <sstream>
 
 CpuMonitorUsage::CpuMonitorUsage(QObject *parent)
@@ -70,7 +70,7 @@ void CpuMonitorUsage::updateCpuUsage()
 
         if (diffTotal > 0) {
             m_currentUsage = 100.0 * static_cast<double>(diffTotal - diffIdle)
-            / static_cast<double>(diffTotal);
+                             / static_cast<double>(diffTotal);
         }
 
         // Update CPU info struct
@@ -121,26 +121,22 @@ void CpuMonitorUsage::updateLscpuInfo()
     int cores = 0;
     int threadsPerCore = 0;
 
-    for (std::string line; std::getline(iss, line); )
-    {
+    for (std::string line; std::getline(iss, line);) {
         QString qLine = QString::fromStdString(line);
 
         // Get CPU model name
-        if (qLine.startsWith("model name:", Qt::CaseInsensitive))
-        {
+        if (qLine.startsWith("model name:", Qt::CaseInsensitive)) {
             m_cpuInfo.modelName = qLine.mid(qLine.indexOf(':') + 1).trimmed();
         }
         // Get sockets
-        else if (qLine.startsWith("socket", Qt::CaseInsensitive))
-        {
+        else if (qLine.startsWith("socket", Qt::CaseInsensitive)) {
             QStringList parts = qLine.split(whitespaceRegex, Qt::SkipEmptyParts);
             if (parts.size() > 1) {
                 m_cpuInfo.sockets = parts[1].toInt();
             }
         }
         // Get cores per socket
-        else if (qLine.startsWith("core(s) per socket", Qt::CaseInsensitive))
-        {
+        else if (qLine.startsWith("core(s) per socket", Qt::CaseInsensitive)) {
             QStringList parts = qLine.split(whitespaceRegex, Qt::SkipEmptyParts);
             if (parts.size() > 0) {
                 cores = parts.last().toInt();
@@ -148,8 +144,7 @@ void CpuMonitorUsage::updateLscpuInfo()
             }
         }
         // Get threads per core to calculate logical processors
-        else if (qLine.startsWith("thread(s) per core", Qt::CaseInsensitive))
-        {
+        else if (qLine.startsWith("thread(s) per core", Qt::CaseInsensitive)) {
             QStringList parts = qLine.split(whitespaceRegex, Qt::SkipEmptyParts);
             if (parts.size() > 0) {
                 threadsPerCore = parts.last().toInt();

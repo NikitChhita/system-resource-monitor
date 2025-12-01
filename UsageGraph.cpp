@@ -96,6 +96,15 @@ void UsageGraph::addUtilizationValue(double value)
     update();
 }
 
+void UsageGraph::setTextColor(const QColor &color){
+    m_textColor = color;
+    update();
+}
+
+QColor UsageGraph::getTextColor(){
+    return m_textColor;
+}
+
 void UsageGraph::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -115,7 +124,8 @@ void UsageGraph::paintEvent(QPaintEvent *event)
     int graphWidth = w - (leftPadding + rightPadding);
 
     if (m_displayLabels) {
-        QColor textColor = QColor(255, 255, 255, 200);
+        QColor textColor = m_textColor;
+        textColor.setAlpha(200);
         QFont titleFont = font();
         titleFont.setPointSize(10);
         titleFont.setBold(true);
@@ -143,7 +153,7 @@ void UsageGraph::paintEvent(QPaintEvent *event)
     double xStep = static_cast<double>(graphWidth) / (m_maxPoints - 1);
 
     if (m_displayLabels) {
-        QPen gridPen(QColor(255, 255, 255, 18));
+        QPen gridPen(QColor(m_textColor.red(), m_textColor.green(), m_textColor.blue(), 30));
         gridPen.setWidth(0.5);
         gridPen.setStyle(Qt::SolidLine);
         painter.setPen(gridPen);
@@ -189,12 +199,12 @@ void UsageGraph::paintEvent(QPaintEvent *event)
         gradient.setColorAt(1.0, QColor(255, 255, 255, 10));
         painter.fillPath(fillPath, gradient);
 
-        QPen linePen(QColor(255, 255, 255));
+        QPen linePen(m_textColor);
         linePen.setWidth(2);
         painter.setPen(linePen);
         painter.drawPath(path);
 
-        QColor borderColor = QColor(255, 255, 255, 150);
+        QColor borderColor = QColor(m_textColor.red(), m_textColor.green(), m_textColor.blue(), 150);
         QPen borderPen(borderColor);
         borderPen.setWidth(1);
         borderPen.setStyle(Qt::SolidLine);
