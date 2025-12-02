@@ -285,24 +285,41 @@ private slots:
             QString("Sent:  %1 %2ps").arg(QString::number(senBits, 'f', 2), senSpeed));
 
         if (recSpeed == "Kb") {
-            recvGraph->setRange(0, 1000);
+            // These repetitive if statements stop the graphs from being continuously redrawn every time the update function is called (1 second interval)
+            if (currentSpeed_Rec != recSpeed) {
+                recvGraph->setRange(0, 1000);
+            };
         } else if (recSpeed == "Mb") {
-            recvGraph->setRange(0, 1000000);
             recBits = recBits * 1000;
+            if (currentSpeed_Rec != recSpeed) {
+                recvGraph->setRange(0, 1000000);
+            };
         } else if (recSpeed == "Gb") {
-            recvGraph->setRange(0, 1000000 * 1000);
             recBits = recBits * 1000000;
+            if (currentSpeed_Rec != recSpeed) {
+                recvGraph->setRange(0, 1000000 * 1000);
+            };
         };
 
+
         if (senSpeed == "Kb") {
-            sentGraph->setRange(0, 1000);
+            if (currentSpeed_Sen != senSpeed) {
+                sentGraph->setRange(0, 1000);
+            };
         } else if (senSpeed == "Mb") {
-            sentGraph->setRange(0, 1000000);
-        } else if (senSpeed == "Gb") {
             senBits = senBits * 1000;
-            sentGraph->setRange(0, 1000000 * 1000);
+            if (currentSpeed_Sen != senSpeed) {
+                sentGraph->setRange(0, 1000000);
+            };
+        } else if (senSpeed == "Gb") {
             senBits = senBits * 1000000;
+            if (currentSpeed_Sen != senSpeed) {
+                sentGraph->setRange(0, 1000000 * 1000);
+            };
         };
+
+        currentSpeed_Rec = recSpeed;
+        currentSpeed_Sen = senSpeed;
 
         recvGraph->setUnit(QString(" %1ps").arg(recSpeed));
         recvGraph->addUtilizationValue(recBits); // gives received graph its data
@@ -320,6 +337,8 @@ private:
     QLabel *bytesSentLabel;
     networkStats *interfaceSpecs;
     networkStats *interfaceMonitor;
+    QString currentSpeed_Sen;
+    QString currentSpeed_Rec;
     UsageGraph *recvGraph;
     UsageGraph *sentGraph;
     QPushButton *backgroundColor_btn;

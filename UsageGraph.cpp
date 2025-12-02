@@ -195,8 +195,8 @@ void UsageGraph::paintEvent(QPaintEvent *event)
         fillPath.lineTo(leftPadding, h - bottomPadding);
 
         QLinearGradient gradient(leftPadding, 0, w - rightPadding, 0);
-        gradient.setColorAt(0.0, QColor(255, 255, 255, 80));
-        gradient.setColorAt(1.0, QColor(255, 255, 255, 10));
+        gradient.setColorAt(0.0, QColor(m_textColor.red(), m_textColor.green(), m_textColor.blue(), 80));
+        gradient.setColorAt(1.0, QColor(m_textColor.red(), m_textColor.green(), m_textColor.blue(), 10));
         painter.fillPath(fillPath, gradient);
 
         QPen linePen(m_textColor);
