@@ -23,6 +23,8 @@ qt_add_executable(untitled
     ProcessInfo.cpp
     UsageGraph.h
     UsageGraph.cpp
+    PageCustomization.h
+    PageCustomization.cpp
 )
 
 target_link_libraries(untitled

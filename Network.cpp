@@ -110,7 +110,8 @@ void networkStats::updateNetStats(QString interface)
     //Skips first run to get a baseline for the next run
     if (!m_firstRun) {
         //Download speed
-        double rxSpeed = ((current_rxBytes - last_rxBytes) * 8) / 1000; // changes from bytes/sec to bits/sec, then to kbps
+        double rxSpeed = ((current_rxBytes - last_rxBytes) * 8)
+                         / 1000; // changes from bytes/sec to bits/sec, then to kbps
         if (rxSpeed >= 1000 && rxSpeed < 1000000) {
             rxSpeed = rxSpeed / 1000;
             rxSize = "Mb";

@@ -36,6 +36,8 @@ public:
     void setRangeLabels(QString minValue, QString maxValue);
     void setUnit(const QString &unit);
     void addUtilizationValue(double value);
+    void setTextColor(const QColor &color);
+    QColor getTextColor();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -53,6 +55,7 @@ private:
     QVector<double> m_history;
     QVector<double> m_rawHistory;
     QColor m_accentColor;
+    QColor m_textColor = QColor(255, 255, 255);
 };
 
 #endif // USAGEGRAPH_H
