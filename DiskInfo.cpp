@@ -70,15 +70,23 @@ void DiskInfo::updateDiskInfo()
         QStringList values = line.split(whitespaceRegex, Qt::SkipEmptyParts);
         if (values.size() >= 14 && !values[2].isEmpty())
         {
-            QChar lastChar = values[2].at(values[2].length()-1);
+            //QChar lastChar = values[2].at(values[2].length()-1);
             //last line was if(values[2] == "vda")
-            if (!(lastChar.isDigit())) {
+            //if (!(lastChar.isDigit())) {
+            QString deviceName = values[2];
+
+            static QRegularExpression pattern = QRegularExpression("p\\d+$|[svh]d[a-z]\\d+$");
+
+            if(deviceName.contains(pattern))
+            {
+                continue;
+            }
                 readIOPS = values[3].toLong();
                 writeIOPS = values[7].toLong();
                 currentSectorsRead = values[5].toLong();
                 currentSectorsWritten = values[9].toLong();
                 break;
-            }
+
         }
     }
 

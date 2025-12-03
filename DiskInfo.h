@@ -15,12 +15,6 @@ public:
 
     QString getDiskInfoString();
     void getDiskSpaceInfo();
-    //long getReadIOPS() const {return readIOPS;}
-    //long getWriteIOPS() const {return writeIOPS;} // indicate writes and reads completed
-
-    //throughput = amount of data moved per second
-    //double getReadThroughput() const {return readThroughput;}
-    //double getWriteThroughput() const {return writtenThroughput;}
 
 signals:
     void updateReads(long readIOPS);

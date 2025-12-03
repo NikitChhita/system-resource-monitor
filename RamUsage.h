@@ -28,8 +28,7 @@ private slots:
 private:
     QTimer *m_Timer;
 
-    long totalUsedRam; //  = totalSysRam - freeRam - buffers - cachedRam
-    //long freeRAM;
+    long totalUsedRam;
     long totalSysRam;
     long buffers;
     long cachedRam;

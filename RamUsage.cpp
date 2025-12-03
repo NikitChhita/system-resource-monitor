@@ -9,7 +9,6 @@ RamUsage::RamUsage(QObject *parent)
     :QObject(parent)
     , totalUsedRam(0)
     , totalSysRam(0)
-    //, freeRAM(0)
     , buffers(0)
     , cachedRam(0)
     , availableRam(0)
@@ -58,10 +57,6 @@ void RamUsage::updateRamUsage()
             totalSysRam = value;
 
         }
-        //else if (values[0] == "MemFree:")
-        //{
-        //    freeRAM = value;
-        //}
         else if(values[0] == "MemAvailable:")
         {
             availableRam = value;

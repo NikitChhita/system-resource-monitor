@@ -11,10 +11,7 @@
 
 ProcessInfo::ProcessInfo(QObject *parent)
     :QObject(parent)
-    //,cpuUsage(0.0)
-    //,ramUsage(0.0)
-    //,bytesRead(0)
-    //,bytesWritten(0)
+
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this,&ProcessInfo::updateProcessInfo);
@@ -233,6 +230,7 @@ std::pair<long,long> ProcessInfo::getDiskInfo(int pid)
 
 // for now iterate through the vector, collect pid, assign it to struct val, everything else
 // to 0, work to display on screen. If working, rinse and repeat
+
 void ProcessInfo::cleanupDeadProcesses(const std::vector<int>& currentPIDs)
 {
     QSet<int> current(currentPIDs.begin(), currentPIDs.end());
