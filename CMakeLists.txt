@@ -6,7 +6,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Network)
 
 qt_standard_project_setup()
 
-qt_add_executable(untitled
+qt_add_executable(Real-Time-System-Monitor
     WIN32 MACOSX_BUNDLE
     main.cpp
     MainWindow.cpp
@@ -27,7 +27,7 @@ qt_add_executable(untitled
     PageCustomization.cpp
 )
 
-target_link_libraries(untitled
+target_link_libraries(Real-Time-System-Monitor
     PRIVATE
         Qt::Core
         Qt::Widgets
@@ -36,14 +36,14 @@ target_link_libraries(untitled
 
 include(GNUInstallDirs)
 
-install(TARGETS untitled
+install(TARGETS Real-Time-System-Monitor
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 qt_generate_deploy_app_script(
-    TARGET untitled
+    TARGET Real-Time-System-Monitor
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
